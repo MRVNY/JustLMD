@@ -1,0 +1,47 @@
+%YAML:1.0
+---
+names:
+  - "88"
+  - "90"
+  - "92"
+  - "95"
+K_88: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_88: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_90: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_90: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_92: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_92: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_95: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_95: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]

@@ -1,0 +1,27 @@
+module: easymocap.datasets.base.MultiVideo
+args:
+    path: /home/yiyu/JustLMD/Songs/YouMakeMeFeelMightyRealSylvesterJustDance2022
+    subs: []
+    subs_vis: []
+    ranges: [0, -1, 1]
+    camera: /home/yiyu/JustLMD/Songs/YouMakeMeFeelMightyRealSylvesterJustDance2022
+    keys:
+        keypoints2d: keypoints
+        handl2d: handl2d
+        handr2d: handr2d
+    reader:
+        image:
+            root: images
+            ext: jpg
+            read_image: False
+        annot:
+            root: annots
+            ext: json
+    writer:
+        render:
+            enable: True
+            root: smplmesh
+            ext: .jpg
+            scale: 0.5
+            mode: image
+    out: /home/yiyu/JustLMD/Songs/YouMakeMeFeelMightyRealSylvesterJustDance2022/output-smpl-3d

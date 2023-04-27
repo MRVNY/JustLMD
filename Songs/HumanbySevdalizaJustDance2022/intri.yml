@@ -1,0 +1,102 @@
+%YAML:1.0
+---
+names:
+  - "25"
+  - "35"
+  - "40"
+  - "44"
+  - "53"
+  - "63"
+  - "73"
+  - "83"
+  - "93"
+K_25: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_25: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_35: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_35: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_40: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_40: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_44: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_44: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_53: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_53: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_63: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_63: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_73: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_73: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_83: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_83: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
+K_93: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [864.000, 0.000, 640.000, 0.000, 864.000, 360.000, 0.000, 0.000, 1.000]
+dist_93: !!opencv-matrix
+  rows: 1
+  cols: 5
+  dt: d
+  data: [0.000, 0.000, 0.000, 0.000, 0.000]
