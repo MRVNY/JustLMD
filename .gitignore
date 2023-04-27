@@ -6,5 +6,8 @@
 *.mp4
 *.mp3
 */cache_spin
+*cache_spin
+*/cache_spin/*
+
 
 Pipeline/.EasyMocap/data
