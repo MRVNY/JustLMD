@@ -18,3 +18,6 @@ data/
 *.pth
 
 Pipeline/.EasyMocap/data
+
+*.DS_Store
+*.ipynb*
