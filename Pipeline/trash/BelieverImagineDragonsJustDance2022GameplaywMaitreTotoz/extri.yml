@@ -1,0 +1,387 @@
+%YAML:1.0
+---
+names:
+  - "126"
+  - "133"
+  - "142"
+  - "149"
+  - "15"
+  - "153"
+  - "159"
+  - "164"
+  - "174"
+  - "180"
+  - "187"
+  - "22"
+  - "26"
+  - "31"
+  - "37"
+  - "41"
+  - "49"
+  - "57"
+  - "64"
+  - "72"
+  - "81"
+  - "88"
+  - "91"
+  - "98"
+R_126: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_126: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_126: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_133: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_133: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_133: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_142: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_142: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_142: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_149: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_149: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_149: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_15: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_15: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_15: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_153: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_153: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_153: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_159: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_159: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_159: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_164: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_164: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_164: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_174: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_174: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_174: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_180: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_180: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_180: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_187: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_187: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_187: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_22: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_22: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_22: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_26: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_26: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_26: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_31: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_31: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_31: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_37: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_37: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_37: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_41: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_41: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_41: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_49: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_49: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_49: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_57: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_57: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_57: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_64: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_64: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_64: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_72: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_72: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_72: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_81: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_81: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_81: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_88: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_88: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_88: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_91: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_91: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_91: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+R_98: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]
+Rot_98: !!opencv-matrix
+  rows: 3
+  cols: 3
+  dt: d
+  data: [1.000, 0.000, 0.000, 0.000, 1.000, 0.000, 0.000, 0.000, 1.000]
+T_98: !!opencv-matrix
+  rows: 3
+  cols: 1
+  dt: d
+  data: [0.000, 0.000, 0.000]

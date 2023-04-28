@@ -10,6 +10,7 @@ from ..mytools import Timer
 from ..dataset import CONFIG
 from .weight import load_weight_pose, load_weight_shape
 from .config import Config
+import os
 
 def multi_stage_optimize(body_model, params, kp3ds, kp2ds=None, bboxes=None, Pall=None, weight={}, cfg=None):
     with Timer('Optimize global RT'):
@@ -25,7 +26,9 @@ def multi_stage_optimize(body_model, params, kp3ds, kp2ds=None, bboxes=None, Pal
             cfg.ROBUST_3D = True
             params = optimizePose3D(body_model, params, kp3ds, weight=weight, cfg=cfg)
         if cfg.model in ['smplh', 'smplx']:
+            os.system('echo %s > log.txt' % (cfg.model))
             cfg.OPT_HAND = True
+            # cfg.OPT_HAND = False
             params = optimizePose3D(body_model, params, kp3ds, weight=weight, cfg=cfg)
         if cfg.model == 'smplx':
             cfg.OPT_EXPR = True

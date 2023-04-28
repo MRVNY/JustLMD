@@ -76,13 +76,26 @@ for song in jd2022.keys():
     path = "../Songs/" + re.sub(r'\W+', '',song)
     
     # Audio
-    if not os.path.exists(path+"/audio.mp3") or not os.path.exists(path+"/video.mp4"):
+    if not os.path.exists(path+"/video.mp4"):
         url = jd2022[song][0]
         crop = jd2022[song][1]
         yt = pytube.YouTube(url)
         
-        audio = yt.streams.get_audio_only()
-        audio.download(output_path=path, filename="audio.mp3")
+        # audio = yt.streams.get_audio_only()
+        # audio.download(output_path=path, filename="audio.mp4")
+        
+        # audioClip = AudioFileClip(path+"/audio.mp4", fps=fps)
+
+        # # # Extract the audio from the video
+        # # audioClip = videoClip.audio
+
+        # # # Write the audio to an MP3 file
+        # audioClip.write_audiofile(path+"/audio.mp3")
+
+        # # Close the video and audio files
+        # # videoClip.close()
+        # audioClip.close()
+        
     # else:
     #     audio,sr = librosa.load(path+"/audio.mp3", sr=sr)
     #     audio = audio[0:]
@@ -90,19 +103,19 @@ for song in jd2022.keys():
     
         video = yt.streams.get_by_resolution("720p")
         video.download(output_path=path, filename="video.mp4")
+        
+        os.system('ffmpeg -i %s/video.mp4 -ab 160k -ac 2 -ar %s -vn %s/audio.wav'%(path, str(sr), path))
     
         # Crop 
         if crop != "full":
-            clip = VideoFileClip(path+"/video.mp4")
+            os.system('mv %s/video.mp4 %s/tmp.mp4'%(path,path))
             if crop == "left":
-                clip = clip.crop(x1=0, x2=clip.w/2)
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:0:0" %s/video.mp4'%(path,path))
             elif crop == "right":
-                clip = clip.crop(x1=clip.w/2, x2=clip.w)
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/2:0" %s/video.mp4'%(path,path))
             elif crop == "center":
-                clip = clip.crop(x1=clip.w/4, x2=3*clip.w/4)
-            os.system('rm '+path+'/video.mp4')
-            clip.write_videofile(path+"/video.mp4", fps=fps, audio=False)
-            clip.close()
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/4:0" %s/video.mp4'%(path,path))
+            os.system('rm %s/tmp.mp4'%path)
         
     if not os.path.exists(path+"/lyrics.lrc"):
         os.system('touch '+path+'/lyrics.lrc')

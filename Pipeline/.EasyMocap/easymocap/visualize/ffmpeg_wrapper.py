@@ -29,6 +29,7 @@ class VideoMaker:
         self.reorder = reorder
     
     def make_video(self, path):
+        if os.path.exists(path+'.mp4'): return
         imgnames = sorted(glob(join(path, '*'+self.ext)))
         if len(imgnames) == 0:
             print('[ffmpeg] No images in folder {}'.format(path))

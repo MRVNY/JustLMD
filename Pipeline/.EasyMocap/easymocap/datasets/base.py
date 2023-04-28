@@ -370,6 +370,7 @@ class Base(BaseData):
         if len(annnames) > 1:
             annnames = tqdm(annnames, desc='writing')
         for index, annname in enumerate(annnames):
+            print("HERE5")
             # get output name
             splitname = annname.split(os.sep)
             splitname = splitname[splitname.index(self.annot_args.root)+1:]
@@ -1039,6 +1040,7 @@ class Keypoints3D(BaseData):
             annnames = tqdm(annnames, desc='writing')
         from ..visualize.pyrender_wrapper import plot_meshes
         for nf, annname in enumerate(annnames):
+
             basename = os.path.basename(annname).replace('.json', '')
             if config['align_first']:
                 invT = - traj[:1]

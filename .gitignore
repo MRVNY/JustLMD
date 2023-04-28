@@ -2,12 +2,19 @@
 *.wav
 *.jpg
 *.jpeg
+*.png
 *.mov
 *.mp4
 *.mp3
 */cache_spin
-*cache_spin
-*/cache_spin/*
+cache_spin
+OLD_Songs/
+OLD_Songs/*
+*OLD_Songs/
+data/
+*__pyc*
+.vscode
 
+*.pth
 
 Pipeline/.EasyMocap/data
