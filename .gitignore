@@ -20,4 +20,4 @@ data/
 Pipeline/.EasyMocap/data
 
 *.DS_Store
-*.ipynb*
+*.ipynb_checkpoint*
