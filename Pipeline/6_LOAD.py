@@ -1,19 +1,26 @@
+from multiprocessing import freeze_support
 import os
 import librosa
 import json
 import datetime
+import torch
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import json
 import torch
 
+from transformers import BertTokenizer, BertModel
+
 def toSeconds(time_stamp):
     minutes, seconds = map(float, time_stamp.split(':'))
     return datetime.timedelta(minutes=minutes, seconds=seconds).total_seconds()
 
-#Lyrics_Audio_Dance_Dataset
-class LAD_DataSet(Dataset): 
+#Lyrics_Music_Dance_Dataset
+class LMD_Dataset(Dataset): 
     def __init__ (self, songs_dir):
+        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        model = BertModel.from_pretrained('bert-base-uncased')
+
         self.LAD_Dict = {}
         self.indexing = {}
         index = 0
@@ -27,7 +34,7 @@ class LAD_DataSet(Dataset):
             if song[0] in ['.','_'] or not os.path.isdir(dir):
                 continue
             
-            print(dir)
+            print(song)
             # LYRICS SEQUENCES
             with open('%s/lyrics.lrc'%dir,'r') as fin:
                 lines = fin.readlines()
@@ -41,6 +48,7 @@ class LAD_DataSet(Dataset):
             
             max_audio_length = 200
             max_dance_length = 500
+            max_lyrics_length = 100
                     
             # STORE BY SEQUENCE
             for i in range(len(timestamps)):
@@ -53,7 +61,13 @@ class LAD_DataSet(Dataset):
 
                 # lyrics
                 lyrics = lines[i].split(']')[1]
-
+                tokens = tokenizer.encode_plus(lyrics, add_special_tokens=True, return_tensors='pt')
+                outputs = model(**tokens)
+                lyrics_embeddings = outputs.last_hidden_state[0].T.detach()
+                # [22, 768] to [100, 768]
+                lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0, max_lyrics_length - lyrics_embeddings.size(1)), mode='constant', value=0)
+                # lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0, max_lyrics_length - lyrics_embeddings.size(0)), mode='constant', value=0)
+                
                 # audio
                 if i == len(timestamps)-1:
                     continue
@@ -82,30 +96,48 @@ class LAD_DataSet(Dataset):
                 dance = torch.nn.functional.pad(dance, pad=(0,0,0, max_dance_length - dance.size(0) ), mode='constant', value=0)
                 
                 # LAD Dict
-                tmp = {'lyrics':lyrics, 'audio':audio_feat, 'dance':dance}
+                tmp = {'lyrics':lyrics_embeddings, 'music':audio_feat, 'dance':dance}
                 
-                self.LAD_Dict[dir+"_"+tag] = tmp
+                self.LAD_Dict[song+"_"+tag] = tmp
                 self.indexing[index] = song+"_"+tag
                 index += 1
                 
         with open("indexing.json", "w") as json_file:
             json.dump(self.indexing, json_file)
+            
+        print("INIT///////////////")
 
     def __getitem__(self,index):
+        print(self.indexing)
         key = self.indexing[index]
+        print(self.LAD_Dict.keys())
         item = self.LAD_Dict[key]
-        return item['lyrics'], item['audio'], item['dance']
+        print("GETITEM///////////////", key, index)
+        return item#['lyrics'], item['music'], item['dance']
     
     def __len__ (self):
         return len(self.indexing.keys())
     
-# dataset = LAD_DataSet('/home/yiyu/JustLMD/Songs/')
-# dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=2)
+if __name__ == '__main__':
+    freeze_support()
+    print("HERE0///////////////")
 
-# dataiter = iter(dataloader)
-# data = next(dataiter)
-# print(data)
 
-# torch.save(dataset, 'LMD.pth')
+    dataset = LMD_Dataset('../Songs/')
+    # torch.save(dataset, 'LMD.pth')
 
-# # dataset = torch.load('my_dataset.pth')
+    # dataset = torch.load('LMD.pth')
+
+    print("HERE2///////////////")
+    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=2)
+    
+    print(list(dataloader.dataset.LAD_Dict.items())[0])
+
+    print("HERE3///////////////")
+    dataiter = iter(dataloader)
+    print("HERE4///////////////")
+    data = next(dataiter)
+    print("HERE5///////////////")
+    print(data)
+
+    # dataset = torch.load('my_dataset.pth')
