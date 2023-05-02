@@ -80,6 +80,7 @@ for song in jd2022.keys():
         url = jd2022[song][0]
         crop = jd2022[song][1]
         yt = pytube.YouTube(url)
+        print(yt.title)
         
         # audio = yt.streams.get_audio_only()
         # audio.download(output_path=path, filename="audio.mp4")

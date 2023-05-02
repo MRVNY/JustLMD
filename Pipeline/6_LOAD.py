@@ -108,11 +108,8 @@ class LMD_Dataset(Dataset):
         print("INIT///////////////")
 
     def __getitem__(self,index):
-        print(self.indexing)
         key = self.indexing[index]
-        print(self.LAD_Dict.keys())
         item = self.LAD_Dict[key]
-        print("GETITEM///////////////", key, index)
         return item#['lyrics'], item['music'], item['dance']
     
     def __len__ (self):
@@ -122,9 +119,8 @@ if __name__ == '__main__':
     freeze_support()
     print("HERE0///////////////")
 
-
     dataset = LMD_Dataset('../Songs/')
-    # torch.save(dataset, 'LMD.pth')
+    torch.save(dataset, 'LMD.pth')
 
     # dataset = torch.load('LMD.pth')
 

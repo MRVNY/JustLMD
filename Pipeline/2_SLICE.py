@@ -8,17 +8,21 @@ import datetime
 
 fps = 30
 sr = 16000
-jd2022 = json.load(open("/home/yiyu/JustLMD/Pipeline/jd2022.json", "r"))
+
+if os.path.exists('/home/yiyu/'):
+    path = '/home/yiyu/JustLM2D/'
+else: path = '/Users/Marvin/NII_Code/JustLM2D/'
+
+jd2022 = json.load(open(path+"Pipeline/jd2022.json", "r"))
 
 def toSeconds(time_stamp):
     minutes, seconds = map(float, time_stamp.split(':'))
     return datetime.timedelta(minutes=minutes, seconds=seconds).total_seconds()
 
 for song in jd2022.keys():
-    song_dir = '/home/yiyu/JustLMD/Songs/'+song
+    song_dir = path+'Songs/'+song
     if song[0]=='.' or song[0]=='_' \
         or not os.path.isdir(song_dir) \
-            or os.path.exists('%s/output-smpl-3d'%(song_dir)) \
                 or not os.path.exists('%s/lyrics.lrc'%(song_dir)):
         continue
     
