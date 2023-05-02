@@ -11,7 +11,8 @@ def one_hot(labels, class_size):
 
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, logvar):
-    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    # BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
     # see Appendix B from VAE paper:
     # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
     # https://arxiv.org/abs/1312.6114
@@ -60,12 +61,12 @@ class CVAE(nn.Module):
         c: (bs, class_size)
         '''
         # inputs = torch.cat([z, c], 1) # (bs, latent_size+class_size)
-        inputs = torch.concat((z, c))
+        inputs = torch.cat((z, c))
         h3 = self.elu(self.fc3(inputs))
         return self.sigmoid(self.fc4(h3))
 
     def forward(self, x, c):
-        mu, logvar = self.encode(x.view(-1, 500*72), c)
-        # mu, logvar = self.encode(x, c)
+        # mu, logvar = self.encode(x.view(-1, 500*72), c)
+        mu, logvar = self.encode(x, c)
         z = self.reparameterize(mu, logvar)
         return self.decode(z, c), mu, logvar
