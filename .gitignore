@@ -21,3 +21,5 @@ Pipeline/.EasyMocap/data
 
 *.DS_Store
 *.ipynb_checkpoint*
+
+Baseline/smplfull/*.json

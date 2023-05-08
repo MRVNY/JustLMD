@@ -1,10 +1,9 @@
 import pytube
 import os
-from moviepy.editor import VideoFileClip, AudioFileClip
 import re
-import librosa
-import soundfile as sf
 import json
+
+from GLOBAL import *
 
 urls = [
     # ['https://www.youtube.com/watch?v=XLbhUWJZaoc&ab_channel=Dancepool' ,'full'],
@@ -73,7 +72,7 @@ for url in urls:
 jd2022 = json.load(open("jd2022.json", "r"))
 for song in jd2022.keys():
     print(song)
-    path = "../Songs/" + re.sub(r'\W+', '',song)
+    song_path = songs_dir + re.sub(r'\W+', '',song)
     
     # Audio
     if not os.path.exists(path+"/video.mp4"):
@@ -103,20 +102,20 @@ for song in jd2022.keys():
     #     sf.write(path+"/audio2.mp3", audio, sr)
     
         video = yt.streams.get_by_resolution("720p")
-        video.download(output_path=path, filename="video.mp4")
+        video.download(output_path=song_path, filename="video.mp4")
         
-        os.system('ffmpeg -i %s/video.mp4 -ab 160k -ac 2 -ar %s -vn %s/audio.wav'%(path, str(sr), path))
+        os.system('ffmpeg -i %s/video.mp4 -ab 160k -ac 2 -ar %s -vn %s/audio.wav'%(song_path, str(sr), song_path))
     
         # Crop 
         if crop != "full":
-            os.system('mv %s/video.mp4 %s/tmp.mp4'%(path,path))
+            os.system('mv %s/video.mp4 %s/tmp.mp4'%(song_path,song_path))
             if crop == "left":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:0:0" %s/video.mp4'%(path,path))
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:0:0" %s/video.mp4'%(song_path,song_path))
             elif crop == "right":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/2:0" %s/video.mp4'%(path,path))
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/2:0" %s/video.mp4'%(song_path,song_path))
             elif crop == "center":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/4:0" %s/video.mp4'%(path,path))
+                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/4:0" %s/video.mp4'%(song_path,song_path))
             os.system('rm %s/tmp.mp4'%path)
         
-    if not os.path.exists(path+"/lyrics.lrc"):
-        os.system('touch '+path+'/lyrics.lrc')
+    if not os.path.exists(song_path+"/lyrics.lrc"):
+        os.system('touch '+song_path+'/lyrics.lrc')

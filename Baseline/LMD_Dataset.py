@@ -3,11 +3,12 @@ import librosa
 import json
 import datetime
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset
 import numpy as np
 import json
 import torch
 
+# use DistilBERT
 from transformers import BertTokenizer, BertModel
 
 def toSeconds(time_stamp):
@@ -17,6 +18,7 @@ def toSeconds(time_stamp):
 #Lyrics_Music_Dance_Dataset
 class LMD_Dataset(Dataset): 
     def __init__ (self, songs_dir):
+        # use DistilBERT
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         model = BertModel.from_pretrained('bert-base-uncased')
 
@@ -24,7 +26,6 @@ class LMD_Dataset(Dataset):
         self.indexing = {}
         index = 0
         
-        fps = 25
         sr = 16000
         
         songList = os.listdir(songs_dir)
@@ -45,11 +46,15 @@ class LMD_Dataset(Dataset):
             poseDir = '%s/output-smpl-3d/smplfull/'%dir
             audioDir = '%s/audios/'%dir
             
-            max_audio_length = 200
-            max_dance_length = 500
-            max_lyrics_length = 100
+            max_audio_length = 600
+            max_dance_length = 600
+            max_lyrics_length = 50
                     
             # STORE BY SEQUENCE
+            max_audio = 0
+            max_dance = 0
+            max_lyrics = 0
+            
             for i in range(len(timestamps)):
                 tag = str(int(timestamps[i]))
                 
@@ -63,10 +68,10 @@ class LMD_Dataset(Dataset):
                 tokens = tokenizer.encode_plus(lyrics, add_special_tokens=True, return_tensors='pt')
                 outputs = model(**tokens)
                 lyrics_embeddings = outputs.last_hidden_state[0].T.detach().type(torch.FloatTensor)
+                if lyrics_embeddings.size(1) > max_lyrics: max_lyrics = lyrics_embeddings.size(1)
                 # [22, 768] to [100, 768]
                 lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0, max_lyrics_length - lyrics_embeddings.size(1)), mode='constant', value=0)
-                # lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0, max_lyrics_length - lyrics_embeddings.size(0)), mode='constant', value=0)
-                
+
                 # audio
                 if i == len(timestamps)-1:
                     continue
@@ -79,8 +84,8 @@ class LMD_Dataset(Dataset):
                 mel_spec_db_norm = (mel_spec_db - np.mean(mel_spec_db)) / np.std(mel_spec_db)
                 # Convert to PyTorch tensor
                 audio_feat = torch.from_numpy(mel_spec_db_norm).type(torch.FloatTensor)
+                if audio_feat.size(1) > max_audio: max_audio = audio_feat.size(1)
                 audio_feat = torch.nn.functional.pad(audio_feat, pad=(0, max_audio_length - audio_feat.size(1) ), mode='constant', value=0)
-
                 
                 # dance
                 if i == len(timestamps)-1:
@@ -92,6 +97,7 @@ class LMD_Dataset(Dataset):
                         dance.append(json.load(obj)['annots'][0]['poses'][0])
                 
                 dance = torch.from_numpy(np.array(dance)).type(torch.FloatTensor)
+                if max_dance < dance.size(0): max_dance = dance.size(0)
                 dance = torch.nn.functional.pad(dance, pad=(0,0,0, max_dance_length - dance.size(0) ), mode='constant', value=0)
                 
                 # LAD Dict
@@ -103,6 +109,8 @@ class LMD_Dataset(Dataset):
                 
         with open("indexing.json", "w") as json_file:
             json.dump(self.indexing, json_file)
+            
+        print("max_audio: ", max_audio, "max_dance: ", max_dance, "max_lyrics: ", max_lyrics)
 
     def __getitem__(self,index):
         key = self.indexing[index]
