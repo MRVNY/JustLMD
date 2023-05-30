@@ -29,13 +29,14 @@ def autoSlice(song_path, sequenceLength):
         lyrics = line.split(']')[1]
         
         if toSeconds(timestamp) - toSeconds(tmpTimestamps) > sequenceLength or toSeconds(tmpTimestamps)==0:
-            out[tmpTimestamps] = tmpLyrics
+            # if "u0" in tmpLyrics: print(tmpLyrics)
+            out[tmpTimestamps] = tmpLyrics.lstrip()
             tmpLyrics = lyrics
             tmpTimestamps = timestamp
         else:
             tmpLyrics = tmpLyrics + ' ' + lyrics
     
-    json.dump(out, open(song_path+'/sliced.json', 'w'))
+    json.dump(out, open(song_path+'/sliced.json', 'w', encoding="utf-8"), ensure_ascii=False, indent=4)
     
     return out
 
@@ -52,6 +53,8 @@ if __name__ == '__main__':
     
     for song in getSongList(version):
         song_path = songs_dir + song
+        
+        autoSlice(song_path, sequenceLength)
         
         if song[0]=='.' or song[0]=='_' \
             or not os.path.isdir(song_path) \
