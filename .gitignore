@@ -23,3 +23,5 @@ Pipeline/.EasyMocap/data
 *.ipynb_checkpoint*
 
 Baseline/smplfull/*.json
+
+Songs*

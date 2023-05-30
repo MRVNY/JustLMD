@@ -22,7 +22,7 @@ epochs = 100
 
 feature_size = 600 * 72 * batch_size
 latent_size = 512 * 512
-class_size = (768*50 + 128*600) * batch_size  # 409600
+class_size = (768*50 + 128*600) * batch_size  # 
 
 if os.path.exists('/home/yiyu/'):
     path = '/home/yiyu/JustLM2D/'

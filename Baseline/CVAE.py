@@ -3,12 +3,6 @@ import torch.utils.data
 from torch import nn, optim
 from torch.nn import functional as F
 
-def one_hot(labels, class_size):
-    targets = torch.zeros(labels.size(0), class_size)
-    for i, label in enumerate(labels):
-        targets[i, label] = 1
-    return targets.to(device)
-
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, logvar):
     # BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
@@ -26,14 +20,17 @@ class CVAE(nn.Module):
         self.feature_size = feature_size
         self.class_size = class_size
 
+        muSig_size =  latent_size
+        # muSig_size =  400
+        
         # encode
-        self.fc1  = nn.Linear(feature_size + class_size, 400)
-        self.fc21 = nn.Linear(400, latent_size)
-        self.fc22 = nn.Linear(400, latent_size)
+        self.fc1  = nn.Linear(feature_size + class_size, muSig_size)
+        self.fc21 = nn.Linear(muSig_size, latent_size)
+        self.fc22 = nn.Linear(muSig_size, latent_size)
 
         # decode
-        self.fc3 = nn.Linear(latent_size + class_size, 400)
-        self.fc4 = nn.Linear(400, feature_size)
+        self.fc3 = nn.Linear(latent_size + class_size, muSig_size)
+        self.fc4 = nn.Linear(muSig_size, feature_size)
 
         self.elu = nn.ELU()
         self.sigmoid = nn.Sigmoid()

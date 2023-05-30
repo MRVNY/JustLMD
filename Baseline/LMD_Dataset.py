@@ -67,9 +67,11 @@ class LMD_Dataset(Dataset):
                 lyrics = lines[i].split(']')[1]
                 tokens = tokenizer.encode_plus(lyrics, add_special_tokens=True, return_tensors='pt')
                 outputs = model(**tokens)
+                # get the cls token
+                lyrics_embeddings = outputs[0][:,0,:]
                 lyrics_embeddings = outputs.last_hidden_state[0].T.detach().type(torch.FloatTensor)
                 if lyrics_embeddings.size(1) > max_lyrics: max_lyrics = lyrics_embeddings.size(1)
-                # [22, 768] to [100, 768]
+                # [22, 768] to [50, 768]
                 lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0, max_lyrics_length - lyrics_embeddings.size(1)), mode='constant', value=0)
 
                 # audio
