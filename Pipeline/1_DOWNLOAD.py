@@ -20,7 +20,6 @@ def urlToTitle(version):
     
     for url in urls:
         if url in finished:
-            print("skipping")
             continue
         # get title with yt-dlp
         title = os.popen('yt-dlp --get-title %s'%url[0]).read()
@@ -37,7 +36,6 @@ if __name__ == '__main__':
     songList = getSongList(version)
     
     for song in songList.keys():
-        # print(song)
         song_path = songs_dir + re.sub(r'\W+', '',song)
         
         if not os.path.exists(song_path+"/video.mp4"):
@@ -45,18 +43,18 @@ if __name__ == '__main__':
             crop = songList[song][1]
         
             # download video of 720p 30fps with yt-dlp
-            print("download: "+ song)
+            print("downloading: "+ song)
             #delete everything in the folder
             os.system('rm -rf %s/*.mp4'%song_path)
             os.system('yt-dlp -f "best[height=720][fps=30]" -o "%s" %s'%(song_path+"/video.mp4", url))
-            
-        if not os.path.exists(song_path+"/lyrics.lrc"):
-            os.system('touch '+song_path+'/lyrics.lrc')
         
     # crop 
     for song in songList.keys():
         song_path = songs_dir + re.sub(r'\W+', '',song)
         crop = songList[song][1]
+        
+        if not os.path.exists(song_path+"/lyrics.lrc"):
+            os.system('touch '+song_path+'/lyrics.lrc')
         
         if not os.path.exists(song_path+"/audio.wav"):
            os.system('ffmpeg -i %s/video.mp4 -ab 160k -ac 2 -ar %s -vn %s/audio.wav'%(song_path, str(sr), song_path))
