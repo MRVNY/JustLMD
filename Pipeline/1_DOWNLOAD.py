@@ -1,9 +1,6 @@
-import pytube
-import os
-import re
-import json
-
 from GLOBAL import *
+
+import re
 
 def getURLs(version):
     if os.path.exists(version+"_url.json"):
