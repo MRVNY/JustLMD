@@ -70,6 +70,7 @@ if __name__ == '__main__':
         if len(os.listdir('%s/videos'%song_path)) > 0 or len(os.listdir('%s/audios'%song_path)) > 0:
             continue
         
+        print("slicing: "+ song)
         sliced = autoSlice(song_path, sequenceLength)
         if sliced is None:
             continue

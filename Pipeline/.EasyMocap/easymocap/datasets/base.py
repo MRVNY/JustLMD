@@ -370,7 +370,6 @@ class Base(BaseData):
         if len(annnames) > 1:
             annnames = tqdm(annnames, desc='writing')
         for index, annname in enumerate(annnames):
-            print("HERE5")
             # get output name
             splitname = annname.split(os.sep)
             splitname = splitname[splitname.index(self.annot_args.root)+1:]

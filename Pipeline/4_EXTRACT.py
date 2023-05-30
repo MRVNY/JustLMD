@@ -1,17 +1,16 @@
 from GLOBAL import *
 
 todo = []
-for song in jd2022.keys():
+for song in getSongList(version):
     song_path = songs_dir+song
     if song[0]=='.' or song[0]=='_' \
         or not os.path.isdir(song_path) \
             or len(os.listdir('%s/videos'%song_path)) == 0 \
-                or len(os.listdir('%s/audios'%song_path)) == 0 \
                     or ( os.path.exists('%s/output-smpl-3d'%(song_path)) and (not os.path.exists('%s/annots'%(song_path)) or len(os.listdir('%s/annots'%(song_path))) == 0)):
         continue
     todo.append(song)
 
-todo.sort()
+# todo.sort()
 print(todo)
 todo = todo[::-1]
 

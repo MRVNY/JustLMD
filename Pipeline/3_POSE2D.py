@@ -14,7 +14,7 @@ if __name__ == '__main__':
             continue
         todo.append(song)
 
-    todo.sort()
+    # todo.sort()
     # todo = todo[::-1]
     print(todo)
 
