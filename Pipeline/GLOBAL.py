@@ -20,7 +20,7 @@ version = 'jd2021'
 def getSongList(version):
     if not os.path.exists(version+".json"):
         songList = {}
-        json.dump(songList, open(version+".json", "w"))
+        json.dump(songList, open(version+".json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
 
     songList = json.load(open(version+".json", "r"))
     return songList

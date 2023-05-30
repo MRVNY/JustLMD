@@ -109,8 +109,8 @@ class LMD_Dataset(Dataset):
                 self.indexing[index] = song+"_"+tag
                 index += 1
                 
-        with open("indexing.json", "w") as json_file:
-            json.dump(self.indexing, json_file)
+        with open("indexing.json", "w", encoding="utf-8") as json_file:
+            json.dump(self.indexing, json_file, ensure_ascii=False, indent=4)
             
         print("max_audio: ", max_audio, "max_dance: ", max_dance, "max_lyrics: ", max_lyrics)
 

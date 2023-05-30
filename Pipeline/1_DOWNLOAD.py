@@ -29,7 +29,7 @@ def urlToTitle(version):
         print(url)
         songList[re.sub(r'\W+', '',title)] = url
     
-    json.dump(songList, open(version+".json", "w"))
+    json.dump(songList, open(version+".json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
     
 
 if __name__ == '__main__':
