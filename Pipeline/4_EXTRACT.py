@@ -12,7 +12,7 @@ for song in getSongList(version):
 
 # todo.sort()
 print(todo)
-todo = todo[::-1]
+# todo = todo[::-1]
 
 for song in todo:
     song_path = songs_dir+song
