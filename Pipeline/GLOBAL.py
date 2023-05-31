@@ -8,14 +8,15 @@ else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 # jd2022 = json.load(open(path + "/Pipeline/jd2022.json", "r"))
 jd2022 = {'SweetButPsychoAvaMaxJustDance2023Edition':[]}
 
+year = '2022'
 # songs_dir = path+'Songs/'
-songs_dir = path + 'Songs_2021/'
+songs_dir = path + 'Songs_'+year+'/'
 
 fps = 30
 sr = 16000
 sequenceLength = 6
 
-version = 'JD2021'
+version = 'JD'+year
 
 def getSongList(version):
     if not os.path.exists(version+".json"):
