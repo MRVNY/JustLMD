@@ -15,7 +15,7 @@ fps = 30
 sr = 16000
 sequenceLength = 6
 
-version = 'jd2020'
+version = 'JD2020'
 
 def getSongList(version):
     if not os.path.exists(version+".json"):
