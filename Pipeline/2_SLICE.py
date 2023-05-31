@@ -1,11 +1,5 @@
 from GLOBAL import *
 
-import datetime
-
-def toSeconds(time_stamp):
-    minutes, seconds = map(float, time_stamp.split(':'))
-    return datetime.timedelta(minutes=minutes, seconds=seconds).total_seconds()
-
 def toTimestamp(seconds): #format muniute:second.milisecond
     delta = datetime.timedelta(seconds=seconds)
     return '{:02d}:{:06.3f}'.format(int(delta.total_seconds() // 60), delta.total_seconds() % 60)
