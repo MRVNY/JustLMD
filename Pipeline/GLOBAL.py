@@ -8,7 +8,7 @@ else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 # jd2022 = json.load(open(path + "/Pipeline/jd2022.json", "r"))
 jd2022 = {'SweetButPsychoAvaMaxJustDance2023Edition':[]}
 
-year = '2022'
+year = '2020'
 # songs_dir = path+'Songs/'
 songs_dir = path + 'Songs_'+year+'/'
 
