@@ -1,4 +1,5 @@
 from GLOBAL import *
+import re
 
 todo = []
 for song in getSongList(version):
@@ -48,6 +49,25 @@ for song in os.listdir(path):
         os.system('rm -rf %s/annots'%song_path)
         os.system('rm -rf %s/cache_spin'%song_path)
         
-for song in os.listdir(path):
+for song in os.listdir(songs_dir):
     song_path = songs_dir+song
     os.system('rm -rf %s/cache_spin'%song_path)
+
+    all_frames = {}
+    for frame in os.listdir('%s/output-smpl-3d/smplfull/video'%song_path):
+        if frame[-5:] == '.json':
+            all_frames[frame[:-5]] = json.load(open('%s/output-smpl-3d/smplfull/video/%s'%(song_path,frame),'r'))
+
+    json.dump(all_frames, open('%s/output-smpl-3d/smplfull.json'%song_path, 'w', encoding="utf-8"), ensure_ascii=False)
+
+    with open('%s/output-smpl-3d/smplfull.json'%song_path, 'r') as f:
+        text = f.read()
+
+    # Remove newlines after "[" character using regular expressions
+    text = re.sub(r'(".*?":)', r'\n\t\1', text)
+
+    # Open the file for writing and write the modified text
+    with open('%s/output-smpl-3d/smplfull.json'%song_path, 'w') as f:
+        f.write(text)
+    
+    print(song)
