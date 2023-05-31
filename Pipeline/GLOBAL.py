@@ -9,13 +9,13 @@ else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 jd2022 = {'SweetButPsychoAvaMaxJustDance2023Edition':[]}
 
 # songs_dir = path+'Songs/'
-songs_dir = path + 'Songs_2020/'
+songs_dir = path + 'Songs_2021/'
 
 fps = 30
 sr = 16000
 sequenceLength = 6
 
-version = 'JD2020'
+version = 'JD2021'
 
 def getSongList(version):
     if not os.path.exists(version+".json"):

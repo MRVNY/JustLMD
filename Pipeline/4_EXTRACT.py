@@ -64,7 +64,9 @@ for song in os.listdir(songs_dir):
         text = f.read()
 
     # Remove newlines after "[" character using regular expressions
-    text = re.sub(r'(".*?":)', r'\n\t\1', text)
+    text = re.sub(r'(".*?":)', r'\n\1', text)
+    text = re.sub(r'("K"|"R"|"T"|"annots")', r'\t\1', text)
+    text = re.sub(r'("id"|"shapes"|"poses"|"Rh"|"Th")', r'\t\t\1', text)
 
     # Open the file for writing and write the modified text
     with open('%s/output-smpl-3d/smplfull.json'%song_path, 'w') as f:
