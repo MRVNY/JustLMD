@@ -25,3 +25,6 @@ Pipeline/.EasyMocap/data
 0*.json
 cfg_*.yml
 *tri.yml
+
+OLD*
+Other*
