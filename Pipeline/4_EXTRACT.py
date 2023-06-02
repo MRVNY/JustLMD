@@ -27,7 +27,7 @@ os.chdir('./.EasyMocap/')
 for song in todo:
     song_path = songs_dir+song
     
-    os.system('cd .EasyMocap/ | python apps/demo/mocap.py %s --work internet --fps 30 --bodyonly'%song_path) 
+    os.system('python apps/demo/mocap.py %s --work internet --fps 30 --bodyonly'%song_path) 
     #--disable_vismesh \
     
     if os.path.exists('%s/output-smpl-3d/smplmesh'%song_path):
