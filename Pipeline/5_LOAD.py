@@ -12,46 +12,54 @@ from LMD_Dataset import LMD_Dataset
 # use DistilBERT
 from transformers import BertTokenizer, BertModel
 
-def load_music(full_audio, start):
-    audio = librosa.load(full_audio, sr=sr, offset=start, duration=sequenceLength)[0]
+print('\n\n////////////////BERT loaded/////////////\n\n')
+
+lyrics_padding = 180
+
+def load_music(audio_path, start):
+    audio = librosa.core.load(audio_path, sr=sr, offset=start, duration=sequenceLength)[0]
     
     # Extract features (e.g. Mel spectrogram)
-    mel_spec = librosa.feature.melspectrogram(y=audio, sr=sr, n_fft=2048, hop_length=512, n_mels=128)
+    mel_spec = librosa.feature.melspectrogram(y=audio, sr=sr, hop_length=601, n_mels=128)
     mel_spec_db = librosa.power_to_db(mel_spec, ref=np.max)
     mel_spec_db_norm = (mel_spec_db - np.mean(mel_spec_db)) / np.std(mel_spec_db)
     # Convert to PyTorch tensor
-    audio_feat = torch.from_numpy(mel_spec_db_norm).type(torch.FloatTensor)
-    return
+    audio_features = torch.from_numpy(mel_spec_db_norm).T
+    return audio_features
 
-def load_dance(full_dance, start):
+def load_dance(full_dance, timestamp):
     dance = []
-    for frame in range(start, start+sequenceLength*fps):
-        with open(poseDir + tag + '/' + frame) as obj:
-            dance.append(json.load(obj)['annots'][0]['poses'][0])
+    start = toSeconds(timestamp)*fps
     
-    dance = torch.from_numpy(np.array(dance)).type(torch.FloatTensor)
-    return
+    for offset in range(sequenceLength*fps):
+        stamp = str(int(start + offset)).zfill(6)
+        # print(len(list(full_dance.keys())))
+        dance.append(full_dance[stamp]['annots'][0]['poses'][0])
     
-def load_lyrics(string):
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    model = BertModel.from_pretrained('bert-base-uncased')
+    dance = torch.from_numpy(np.array(dance))
+    return dance
     
-    # lyrics
-    lyrics = lines[i].split(']')[1]
+def load_lyrics(lyrics, tokenizer, model):
     tokens = tokenizer.encode_plus(lyrics, add_special_tokens=True, return_tensors='pt')
     outputs = model(**tokens)
     # get the cls token
     lyrics_embeddings = outputs[0][:,0,:]
-    lyrics_embeddings = outputs.last_hidden_state[0].T.detach().type(torch.FloatTensor)
+    lyrics_embeddings = outputs.last_hidden_state[0].detach()
     
-    return
+    lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0,0,0,lyrics_padding - lyrics_embeddings.size(0)), mode='constant', value=0)
+    return lyrics_embeddings
 
-def init_dataset (self, songs_dir):
-    self.LMD_Dict = {}
-    self.indexing = {}
+def init_dataset (songs_dir):
+    from GLOBAL import sr, fps, sequenceLength
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    model = BertModel.from_pretrained('bert-base-uncased')
+    
+    LMD_Dict = {}
+    indexing = {}
     index = 0
         
     for song in os.listdir(songs_dir):
+        print(song)
         song_path = songs_dir + song
         if song[0] in ['.','_'] or not os.path.isdir(song_path):
             continue
@@ -65,32 +73,50 @@ def init_dataset (self, songs_dir):
         full_audio,sr = librosa.load('%s/audio.wav'%song_path, sr=sr)
         full_dance = json.load(open('%s/output-smpl-3d/smplfull.json'%song_path, 'r'))
         
-        for timestamp in list(sliced.keys()):
-            tag = str(int(timestamp))
-            frame = int(timestamp*fps)
+        start = list(sliced.keys())[0]
+        todo = list(sliced.keys())
+        del todo[-1]
+        for timestamp in todo:
+            trimed_timestamp = toTimestamp(toSeconds(timestamp)-toSeconds(start))
+            seconds = toSeconds(timestamp)
+            tag = str(int(seconds))
+            frame = int(seconds*fps)
             
             # LAD Dict
-            tmp = {'lyrics':load_lyrics(sliced[timestamp]), 'music':load_music(full_audio, frame), 'dance':load_dance(full_dance, frame)}
+            tmp = {'lyrics':load_lyrics(sliced[timestamp], model, tokenizer), 'music':load_music('%s/audio.wav'%song_path, seconds), 'dance':load_dance(full_dance, trimed_timestamp)}
             
-            self.LMD_Dict[song+"_"+tag] = tmp
-            self.indexing[index] = song+"_"+tag
+            LMD_Dict[song+"_"+tag] = tmp
+            indexing[index] = song+"_"+tag
             index += 1
-            
+
     with open("indexing.json", "w", encoding="utf-8") as json_file:
-        json.dump(self.indexing, json_file, ensure_ascii=False, indent=4)
+        json.dump(indexing, json_file, ensure_ascii=False, indent=4)
         
+    return LMD_Dict
     
 if __name__ == '__main__':
     freeze_support()
     
-    dataset = LMD_Dataset(path+'/Songs/')
-    torch.save(dataset, 'LMD_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    # LMD_Dict = init_dataset(songs_dir)
+    
+    # torch.save(LMD_Dict, 'JD2021_LMD_Dict_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    
+    LMD_Dict = torch.load('JD2021_LMD_Dict_20230601180119.pth')
+    indexing = json.load(open("indexing.json", 'r'))
+    
+    sample = LMD_Dict['JustDance2021YOUVEGOTAFRIENDINMEDisneyPixarsToyStoryCosplayGameplay_18']
 
+    dataset = LMD_Dataset(LMD_Dict, indexing)
+    print('\n\n///////////////dataset = LMD_Dataset(LMD_Dict, indexing)//////////////\n\n')
+    # torch.save(dataset, 'LMD_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     # dataset = torch.load('LMD.pth')
 
-    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=2)
+    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
+    print('\n\n///////////////dataloader = DataLoader(dataset=dataset, batch_size=1, shuffle=True, num_workers=1)//////////////\n\n')
 
     # print(list(dataloader.dataset.LMD_Dict.items())[0])
     dataiter = iter(dataloader)
+    print('\n\n///////////////dataiter = iter(dataloader)//////////////\n\n')
     data = next(dataiter)
+    print('\n\n///////////////data = next(dataiter)//////////////\n\n')
     print(data)

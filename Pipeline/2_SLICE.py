@@ -1,8 +1,4 @@
 from GLOBAL import *
-
-def toTimestamp(seconds): #format muniute:second.milisecond
-    delta = datetime.timedelta(seconds=seconds)
-    return '{:02d}:{:06.3f}'.format(int(delta.total_seconds() // 60), delta.total_seconds() % 60)
     
 def autoSlice(song_path, sequenceLength):
     with open('%s/lyrics.lrc'%song_path,'r') as fin:
@@ -37,7 +33,7 @@ def autoSlice(song_path, sequenceLength):
 def trim(song_path, sliced):
     timestamps = list(sliced.keys())
     start = timestamps[0]
-    end = toTimestamp(toSeconds(timestamps[-1]) + sequenceLength)
+    end = toTimestamp(toSeconds(timestamps[-1]) + sequenceLength + 1)
 
     # os.system('mv %s/video.mp4 %s/tmp.mp4'%(song_path, song_path))
     os.system('ffmpeg -i %s -ss %s -to %s -c copy %s' % (song_path+'/video.mp4', start, end, song_path+'/videos/video.mp4'))

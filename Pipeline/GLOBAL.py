@@ -14,7 +14,8 @@ year = '2021'
 songs_dir = path + 'Songs_'+year+'/'
 
 fps = 30
-sr = 16000
+# sr = 16000
+sr = 18000
 sequenceLength = 6
 
 version = 'JD'+year
@@ -22,6 +23,10 @@ version = 'JD'+year
 def toSeconds(time_stamp):
     minutes, seconds = map(float, time_stamp.split(':'))
     return datetime.timedelta(minutes=minutes, seconds=seconds).total_seconds()
+
+def toTimestamp(seconds): #format muniute:second.milisecond
+    delta = datetime.timedelta(seconds=seconds)
+    return '{:02d}:{:06.3f}'.format(int(delta.total_seconds() // 60), delta.total_seconds() % 60)
 
 def getSongList(version):
     if not os.path.exists(path + '/Pipeline/' + version+".json"):
