@@ -69,6 +69,10 @@ def parser():
     parameters['archiname'] = 'transformer'
     parameters['losses'] = ['rc', 'rcxyz', 'kl']
     
+    parameters["num_classes"] = 896 * 180
+    parameters["nfeats"] = 3
+    parameters["njoints"] = 24
+    
     # update lambdas params
     lambdas = {}
     for loss in parameters["losses"]:

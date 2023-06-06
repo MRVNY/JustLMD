@@ -29,9 +29,12 @@ max_len: -1
 min_len: -1
 modelname: cvae_transformer_rc_rcxyz_kl
 modeltype: cvae
+nfeats: 3
+njoints: 24
 no-vertstrans: false
+num_classes: 161280
 num_epochs: 5000
-num_frames: 60
+num_frames: 180
 num_layers: 4
 num_seq_max: -1
 pose_rep: rot6d

@@ -10,9 +10,17 @@ import src.utils.fixseed  # noqa
 from src.parser.training import parser
 from src.utils.get_model_and_data import get_model_and_data
 
+import json
+from src.datasets.LMD_Dataset import LMD_Dataset
+
 # NOTE: epoch
 def do_epochs(model, datasets, parameters, optimizer, writer):
-    dataset = datasets["train"]
+    print(type(datasets))
+    dataset = datasets
+    # dataset = datasets["train"]
+    # train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
+    #                             shuffle=True, num_workers=8, collate_fn=collate)
+    
     train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
                                 shuffle=True, num_workers=8, collate_fn=collate)
 
@@ -22,7 +30,7 @@ def do_epochs(model, datasets, parameters, optimizer, writer):
             dict_loss = train(model, optimizer, train_iterator, model.device)
 
             for key in dict_loss.keys():
-                dict_loss[key] /= len(train_iterator)
+                dict_loss[key] = len(train_iterator)
                 writer.add_scalar(f"Loss/{key}", dict_loss[key], epoch)
 
             epochlog = f"Epoch {epoch}, train losses: {dict_loss}"

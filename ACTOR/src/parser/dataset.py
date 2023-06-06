@@ -5,7 +5,7 @@ def add_dataset_options(parser):
     group = parser.add_argument_group('Dataset options')
     group.add_argument("--dataset", default='lm2d', help="Dataset to load")
     group.add_argument("--datapath", help="Path of the data")
-    group.add_argument("--num_frames", default=60, type=int, help="number of frames or -1 => whole, -2 => random between min_len and total")
+    group.add_argument("--num_frames", default=180, type=int, help="number of frames or -1 => whole, -2 => random between min_len and total")
     group.add_argument("--sampling", default="conseq", choices=["conseq", "random_conseq", "random"], help="sampling choices")
     group.add_argument("--sampling_step", default=1, type=int, help="sampling step")
     group.add_argument("--pose_rep", default='rot6d', choices=POSE_REPS, help="xyz or rotvec etc")

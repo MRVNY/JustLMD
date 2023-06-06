@@ -28,3 +28,9 @@ cfg_*.yml
 
 OLD*
 Other*
+
+Actor/exps
+ACTOR/models
+ACTOR/pretrained_models
+*.tar
+*.pkl
