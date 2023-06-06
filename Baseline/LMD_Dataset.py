@@ -12,7 +12,7 @@ class LMD_Dataset(Dataset):
         self.indexing = indexing
         
     def __getitem__(self,index):
-        key = self.indexing[index]
+        key = self.indexing[str(index)]
         item = self.LAD_Dict[key]
         return item#['lyrics'], item['music'], item['dance']
     

@@ -7,10 +7,12 @@ if os.path.exists('/home/yiyu/'):
 else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 
 # jd2022 = json.load(open(path + "/Pipeline/jd2022.json", "r"))
-jd2022 = {'SweetButPsychoAvaMaxJustDance2023Edition':[]}
+test = {'SweetButPsychoAvaMaxJustDance2023Edition':[]}
 
-year = '2021'
-# songs_dir = path+'Songs/'
+all_years = ['2020', '2021', '2022']
+songs_collection = [path + 'Songs_2020/', path + 'Songs_2021/', path + 'Songs_2022/']
+
+year = '2022'
 songs_dir = path + 'Songs_'+year+'/'
 
 fps = 30

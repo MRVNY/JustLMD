@@ -12,8 +12,6 @@ from LMD_Dataset import LMD_Dataset
 # use DistilBERT
 from transformers import BertTokenizer, BertModel
 
-print('\n\n////////////////BERT loaded/////////////\n\n')
-
 lyrics_padding = 180
 
 def load_music(audio_path, start):
@@ -30,6 +28,7 @@ def load_music(audio_path, start):
 def load_dance(full_dance, timestamp):
     dance = []
     start = toSeconds(timestamp)*fps
+    print(timestamp)
     
     for offset in range(sequenceLength*fps):
         stamp = str(int(start + offset)).zfill(6)
@@ -49,7 +48,7 @@ def load_lyrics(lyrics, tokenizer, model):
     lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0,0,0,lyrics_padding - lyrics_embeddings.size(0)), mode='constant', value=0)
     return lyrics_embeddings
 
-def init_dataset (songs_dir):
+def init_dataset (songs_collection):
     from GLOBAL import sr, fps, sequenceLength
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     model = BertModel.from_pretrained('bert-base-uncased')
@@ -57,37 +56,41 @@ def init_dataset (songs_dir):
     LMD_Dict = {}
     indexing = {}
     index = 0
-        
-    for song in os.listdir(songs_dir):
-        print(song)
-        song_path = songs_dir + song
-        if song[0] in ['.','_'] or not os.path.isdir(song_path):
-            continue
-        
-        if not os.path.exists('%s/audio.wav'%song_path) or \
-            not os.path.exists('%s/output-smpl-3d/smplfull.json'%song_path):
-            continue
-        
-        sliced = json.load(open(song_path + '/sliced.json', 'r'))
-        
-        full_audio,sr = librosa.load('%s/audio.wav'%song_path, sr=sr)
-        full_dance = json.load(open('%s/output-smpl-3d/smplfull.json'%song_path, 'r'))
-        
-        start = list(sliced.keys())[0]
-        todo = list(sliced.keys())
-        del todo[-1]
-        for timestamp in todo:
-            trimed_timestamp = toTimestamp(toSeconds(timestamp)-toSeconds(start))
-            seconds = toSeconds(timestamp)
-            tag = str(int(seconds))
-            frame = int(seconds*fps)
+    songs = []
+    
+    for year_dir in songs_collection:
+        for song in os.listdir(year_dir):
+            print(song)
+            song_path = year_dir + song
+            if song[0] in ['.','_'] or not os.path.isdir(song_path):
+                continue
             
-            # LAD Dict
-            tmp = {'lyrics':load_lyrics(sliced[timestamp], model, tokenizer), 'music':load_music('%s/audio.wav'%song_path, seconds), 'dance':load_dance(full_dance, trimed_timestamp)}
+            if not os.path.exists('%s/audio.wav'%song_path) or \
+                not os.path.exists('%s/output-smpl-3d/smplfull.json'%song_path):
+                continue
             
-            LMD_Dict[song+"_"+tag] = tmp
-            indexing[index] = song+"_"+tag
-            index += 1
+            sliced = json.load(open(song_path + '/sliced.json', 'r'))
+            
+            full_audio,sr = librosa.load('%s/audio.wav'%song_path, sr=sr)
+            full_dance = json.load(open('%s/output-smpl-3d/smplfull.json'%song_path, 'r'))
+            
+            start = list(sliced.keys())[0]
+            todo = list(sliced.keys())
+            del todo[-1]
+            for timestamp in todo:
+                trimed_timestamp = toTimestamp(toSeconds(timestamp)-toSeconds(start))
+                seconds = toSeconds(timestamp)
+                tag = str(int(seconds))
+                frame = int(seconds*fps)
+                
+                # LAD Dict
+                tmp = {'lyrics':load_lyrics(sliced[timestamp], tokenizer, model), \
+                    'music':load_music('%s/audio.wav'%song_path, seconds), \
+                    'dance':load_dance(full_dance, trimed_timestamp)}
+                
+                LMD_Dict[song+"_"+tag] = tmp
+                indexing[index] = song+"_"+tag
+                index += 1
 
     with open("indexing.json", "w", encoding="utf-8") as json_file:
         json.dump(indexing, json_file, ensure_ascii=False, indent=4)
@@ -97,26 +100,21 @@ def init_dataset (songs_dir):
 if __name__ == '__main__':
     freeze_support()
     
-    # LMD_Dict = init_dataset(songs_dir)
+    LMD_Dict = init_dataset(songs_collection)
+    torch.save(LMD_Dict, 'JD20-22_LMD_Dict_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     
-    # torch.save(LMD_Dict, 'JD2021_LMD_Dict_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
-    
-    LMD_Dict = torch.load('JD2021_LMD_Dict_20230601180119.pth')
+    # LMD_Dict = torch.load('JD2021_LMD_Dict_20230602181139.pth')
     indexing = json.load(open("indexing.json", 'r'))
     
     sample = LMD_Dict['JustDance2021YOUVEGOTAFRIENDINMEDisneyPixarsToyStoryCosplayGameplay_18']
 
     dataset = LMD_Dataset(LMD_Dict, indexing)
-    print('\n\n///////////////dataset = LMD_Dataset(LMD_Dict, indexing)//////////////\n\n')
     # torch.save(dataset, 'LMD_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     # dataset = torch.load('LMD.pth')
 
-    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
-    print('\n\n///////////////dataloader = DataLoader(dataset=dataset, batch_size=1, shuffle=True, num_workers=1)//////////////\n\n')
+    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=1)
 
     # print(list(dataloader.dataset.LMD_Dict.items())[0])
     dataiter = iter(dataloader)
-    print('\n\n///////////////dataiter = iter(dataloader)//////////////\n\n')
     data = next(dataiter)
-    print('\n\n///////////////data = next(dataiter)//////////////\n\n')
-    print(data)
+    print(data['lyrics'].size(), data['music'].size(), data['dance'].size())
