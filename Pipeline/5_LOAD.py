@@ -111,7 +111,7 @@ if __name__ == '__main__':
     # torch.save(dataset, 'LMD_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     # dataset = torch.load('LMD.pth')
 
-    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
+    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=1)
     print('\n\n///////////////dataloader = DataLoader(dataset=dataset, batch_size=1, shuffle=True, num_workers=1)//////////////\n\n')
 
     # print(list(dataloader.dataset.LMD_Dict.items())[0])
