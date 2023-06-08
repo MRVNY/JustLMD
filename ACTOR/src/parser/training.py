@@ -59,17 +59,17 @@ def parser():
     parameters['translation'] = True
     parameters['no-vertstrans'] = False
     parameters['modelname'] = 'cvae_transformer_rc_rcxyz_kl'
-    print(parameters) # {'expname': 'exps', 'folder': 'exps/humanact12', 'cuda': True, 'batch_size': 20, 'num_epochs': 5000, 'lr': 0.0001, 'snapshot': 100, 'dataset': 'humanact12', 'num_frames': 60, 'sampling': 'conseq', 'sampling_step': 1, 'pose_rep': 'rot6d', 'max_len': -1, 'min_len': -1, 'num_seq_max': -1, 'glob': True, 'glob_rot': [3.141592653589793, 0, 0], 'translation': True, 'debug': False, 'modelname': 'cvae_transformer_rc_rcxyz_kl', 'latent_dim': 256, 'lambda_kl': 1e-05, 'lambda_rc': 1.0, 'lambda_rcxyz': 1.0, 'jointstype': 'vertices', 'vertstrans': False, 'num_layers': 8, 'activation': 'gelu'}
+    # print(parameters) # {'expname': 'exps', 'folder': 'exps/humanact12', 'cuda': True, 'batch_size': 20, 'num_epochs': 5000, 'lr': 0.0001, 'snapshot': 100, 'dataset': 'humanact12', 'num_frames': 60, 'sampling': 'conseq', 'sampling_step': 1, 'pose_rep': 'rot6d', 'max_len': -1, 'min_len': -1, 'num_seq_max': -1, 'glob': True, 'glob_rot': [3.141592653589793, 0, 0], 'translation': True, 'debug': False, 'modelname': 'cvae_transformer_rc_rcxyz_kl', 'latent_dim': 256, 'lambda_kl': 1e-05, 'lambda_rc': 1.0, 'lambda_rcxyz': 1.0, 'jointstype': 'vertices', 'vertstrans': False, 'num_layers': 8, 'activation': 'gelu'}
 
     # parse modelname
     ret = parse_modelname(parameters["modelname"])
-    print(ret)
+    # print(ret)
     parameters["modeltype"], parameters["archiname"], parameters["losses"] = ret
     parameters['modeltype'] = 'cvae'
     parameters['archiname'] = 'transformer'
     parameters['losses'] = ['rc', 'rcxyz', 'kl']
     
-    parameters["num_classes"] = 896 * 180
+    parameters["num_classes"] = 896 # * 180
     parameters["nfeats"] = 3
     parameters["njoints"] = 24
     

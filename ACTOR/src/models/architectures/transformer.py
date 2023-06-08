@@ -77,6 +77,7 @@ class Encoder_TRANSFORMER(nn.Module):
             self.sigmaQuery = nn.Parameter(torch.randn(self.num_classes, self.latent_dim))
         
         self.skelEmbedding = nn.Linear(self.input_feats, self.latent_dim)
+        self.xyEmbedding = nn.Linear(self.num_classes + self.input_feats, self.latent_dim)
         
         self.sequence_pos_encoder = PositionalEncoding(self.latent_dim, self.dropout)
         
@@ -95,9 +96,11 @@ class Encoder_TRANSFORMER(nn.Module):
         x, y, mask = batch["x"], batch["y"], batch["mask"]
         bs, njoints, nfeats, nframes = x.shape
         x = x.permute((3, 0, 1, 2)).reshape(nframes, bs, njoints*nfeats)
+        y = y.permute((1, 0, 2)).reshape(nframes, bs, self.num_classes)
         
         # embedding of the skeleton
-        x = self.skelEmbedding(x)
+        # x = self.skelEmbedding(x)
+        xseq = self.xyEmbedding(torch.cat((y, x), axis=2))
 
         # only for ablation / not used in the final model
         if self.ablation == "average_encoder":
@@ -114,16 +117,18 @@ class Encoder_TRANSFORMER(nn.Module):
             logvar = self.sigma_layer(z)
         else:
             # adding the mu and sigma queries
-            xseq = torch.cat((self.muQuery[y][None], self.sigmaQuery[y][None], x), axis=0)
+            # xseq = torch.cat((self.muQuery[y][None], self.sigmaQuery[y][None], x), axis=0)
+            # xseq = torch.cat((y, x), axis=2)
 
             # add positional encoding
             xseq = self.sequence_pos_encoder(xseq)
 
             # create a bigger mask, to allow attend to mu and sigma
-            muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
-            maskseq = torch.cat((muandsigmaMask, mask), axis=1)
+            # muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
+            # maskseq = torch.cat((muandsigmaMask, mask), axis=1)
 
-            final = self.seqTransEncoder(xseq, src_key_padding_mask=~maskseq)
+            final = self.seqTransEncoder(xseq, src_key_padding_mask=~mask)
+            # final = self.seqTransEncoder(xseq, src_key_padding_mask=~muandsigmaMask)
             mu = final[0]
             logvar = final[1]
             
@@ -165,6 +170,8 @@ class Decoder_TRANSFORMER(nn.Module):
             self.ztimelinear = nn.Linear(self.latent_dim + self.num_classes, self.latent_dim)
         else:
             self.actionBiases = nn.Parameter(torch.randn(self.num_classes, self.latent_dim))
+            
+        self.yzEmbedding = nn.Linear(self.num_classes + self.latent_dim, self.latent_dim)
 
         # only for ablation / not used in the final model
         if self.ablation == "time_encoding":
@@ -202,8 +209,13 @@ class Decoder_TRANSFORMER(nn.Module):
                 z = torch.stack((z, self.actionBiases[y]), axis=0)
             else:
                 # shift the latent noise vector to be the action noise
-                z = z + self.actionBiases[y]
-                z = z[None]  # sequence of size 1
+                # y = y.permute((1, 0, 2)).reshape(bs, nframes * self.num_classes)
+                y = y.reshape(bs, nframes * self.num_classes)
+                # z = z + self.actionBiases[y]
+                z = torch.cat((z,y), axis=1)
+                z = z + self.yzEmbedding(z)
+                # z = z[None]  # sequence of size 1
+                z = z.view(nframes, bs, latent_dim, -1)
             
         timequeries = torch.zeros(nframes, bs, latent_dim, device=z.device)
         

@@ -32,5 +32,6 @@ Other*
 Actor/exps
 ACTOR/models
 ACTOR/pretrained_models
+ACTOR/exps
 *.tar
 *.pkl

@@ -13,7 +13,8 @@ class CAE(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
-        self.outputxyz = outputxyz
+        # self.outputxyz = outputxyz
+        self.outputxyz = False 
         
         self.lambdas = lambdas
         

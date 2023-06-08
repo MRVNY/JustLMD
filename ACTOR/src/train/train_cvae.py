@@ -15,7 +15,6 @@ from src.datasets.LMD_Dataset import LMD_Dataset
 
 # NOTE: epoch
 def do_epochs(model, datasets, parameters, optimizer, writer):
-    print(type(datasets))
     dataset = datasets
     # dataset = datasets["train"]
     # train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
@@ -23,6 +22,11 @@ def do_epochs(model, datasets, parameters, optimizer, writer):
     
     train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
                                 shuffle=True, num_workers=8, collate_fn=collate)
+    
+    # dataiter = iter(train_iterator)
+    # data = next(dataiter)
+    # print(data['lyrics'].size(), data['music'].size(), data['dance'].size())
+    
 
     logpath = os.path.join(parameters["folder"], "training.log")
     with open(logpath, "w") as logfile:

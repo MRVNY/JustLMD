@@ -9,8 +9,8 @@ from src.datasets.LMD_Dataset import LMD_Dataset
 
 def get_model_and_data(parameters):
     # datasets = get_datasets(parameters)
-    LMD_Dict = torch.load('/Users/Marvin/NII_Code/JustLM2D/ACTOR/data/HumanAct12Poses/JD20-22_LMD_Dict_20230602192541.pth')
-    indexing = json.load(open("/Users/Marvin/NII_Code/JustLM2D/ACTOR/data/HumanAct12Poses/indexing.json", 'r'))
+    LMD_Dict = torch.load('/home/yiyu/JustLM2D/Pipeline/JD20-22_LMD_Dict_20230602192541.pth')
+    indexing = json.load(open("/home/yiyu/JustLM2D/Pipeline/indexing.json", 'r', encoding="utf-8"))
     datasets = LMD_Dataset(LMD_Dict, indexing)
 
     if parameters["modelname"] == "recognition":

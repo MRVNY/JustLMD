@@ -100,13 +100,13 @@ def init_dataset (songs_collection):
 if __name__ == '__main__':
     freeze_support()
     
-    LMD_Dict = init_dataset(songs_collection)
-    torch.save(LMD_Dict, 'JD20-22_LMD_Dict_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    # LMD_Dict = init_dataset(songs_collection)
+    # torch.save(LMD_Dict, 'JD20-22_LMD_Dict_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     
-    # LMD_Dict = torch.load('JD2021_LMD_Dict_20230602181139.pth')
+    LMD_Dict = torch.load('JD20-22_LMD_Dict_20230602192541.pth')
     indexing = json.load(open("indexing.json", 'r'))
     
-    sample = LMD_Dict['JustDance2021YOUVEGOTAFRIENDINMEDisneyPixarsToyStoryCosplayGameplay_18']
+    # sample = LMD_Dict['JustDance2021YOUVEGOTAFRIENDINMEDisneyPixarsToyStoryCosplayGameplay_18']
 
     dataset = LMD_Dataset(LMD_Dict, indexing)
     # torch.save(dataset, 'LMD_%s.pth'%datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
