@@ -67,11 +67,14 @@ def parser():
     parameters["modeltype"], parameters["archiname"], parameters["losses"] = ret
     parameters['modeltype'] = 'cvae'
     parameters['archiname'] = 'transformer'
-    parameters['losses'] = ['rc', 'rcxyz', 'kl']
+    # parameters['losses'] = ['rc', 'rcxyz', 'kl']
+    parameters['losses'] = ['rc', 'kl']
     
     parameters["num_classes"] = 896 # * 180
     parameters["nfeats"] = 3
     parameters["njoints"] = 24
+    
+    # parameters["lr"] = 0.01
     
     # update lambdas params
     lambdas = {}

@@ -22,12 +22,11 @@ def collate_tensors(batch):
 
 def collate(batch):
     databatch = [b['dance'] for b in batch]
-    databatch = databatch
     labelbatch = [torch.cat((b['music'], b['lyrics']), dim=1) for b in batch]
     lenbatch = [180 for b in batch]
 
     databatchTensor = collate_tensors(databatch)
-    databatchTensor = databatchTensor.view(20, 180, 24, 3).permute(0, 2, 3, 1).float()
+    databatchTensor = databatchTensor.view(len(databatch), 180, 24, 3).permute(0, 2, 3, 1).float()
     labelbatchTensor = collate_tensors(labelbatch).float()
     lenbatchTensor = torch.as_tensor(lenbatch)
 

@@ -18,11 +18,9 @@ lambda_rcxyz: 1.0
 lambdas:
   kl: 1.0e-05
   rc: 1.0
-  rcxyz: 1.0
 latent_dim: 256
 losses:
 - rc
-- rcxyz
 - kl
 lr: 0.0001
 max_len: -1

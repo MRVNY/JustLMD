@@ -78,6 +78,7 @@ class Encoder_TRANSFORMER(nn.Module):
         
         self.skelEmbedding = nn.Linear(self.input_feats, self.latent_dim)
         self.xyEmbedding = nn.Linear(self.num_classes + self.input_feats, self.latent_dim)
+        self.muSigmaEmbedding = nn.Linear(self.num_frames, 2)
         
         self.sequence_pos_encoder = PositionalEncoding(self.latent_dim, self.dropout)
         
@@ -92,7 +93,6 @@ class Encoder_TRANSFORMER(nn.Module):
                                                      num_layers=self.num_layers)
 
     def forward(self, batch):
-        print(batch.keys())
         x, y, mask = batch["x"], batch["y"], batch["mask"]
         bs, njoints, nfeats, nframes = x.shape
         x = x.permute((3, 0, 1, 2)).reshape(nframes, bs, njoints*nfeats)
@@ -101,6 +101,7 @@ class Encoder_TRANSFORMER(nn.Module):
         # embedding of the skeleton
         # x = self.skelEmbedding(x)
         xseq = self.xyEmbedding(torch.cat((y, x), axis=2))
+        xseq = self.muSigmaEmbedding(xseq.permute((1, 2, 0))).permute((2, 0, 1))
 
         # only for ablation / not used in the final model
         if self.ablation == "average_encoder":
@@ -121,14 +122,14 @@ class Encoder_TRANSFORMER(nn.Module):
             # xseq = torch.cat((y, x), axis=2)
 
             # add positional encoding
-            xseq = self.sequence_pos_encoder(xseq)
+            # xseq = self.sequence_pos_encoder(xseq)
 
             # create a bigger mask, to allow attend to mu and sigma
-            # muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
+            muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
             # maskseq = torch.cat((muandsigmaMask, mask), axis=1)
 
-            final = self.seqTransEncoder(xseq, src_key_padding_mask=~mask)
-            # final = self.seqTransEncoder(xseq, src_key_padding_mask=~muandsigmaMask)
+            # final = self.seqTransEncoder(xseq, src_key_padding_mask=~mask)
+            final = self.seqTransEncoder(xseq, src_key_padding_mask=~muandsigmaMask)
             mu = final[0]
             logvar = final[1]
             
@@ -171,7 +172,8 @@ class Decoder_TRANSFORMER(nn.Module):
         else:
             self.actionBiases = nn.Parameter(torch.randn(self.num_classes, self.latent_dim))
             
-        self.yzEmbedding = nn.Linear(self.num_classes + self.latent_dim, self.latent_dim)
+        self.yEmbedding = nn.Linear(self.num_classes, self.latent_dim)
+        self.yzEmbedding = nn.Linear(self.num_frames+1, self.num_frames)
 
         # only for ablation / not used in the final model
         if self.ablation == "time_encoding":
@@ -191,7 +193,6 @@ class Decoder_TRANSFORMER(nn.Module):
         
     def forward(self, batch):
         z, y, mask, lengths = batch["z"], batch["y"], batch["mask"], batch["lengths"]
-
         latent_dim = z.shape[1]
         bs, nframes = mask.shape
         njoints, nfeats = self.njoints, self.nfeats
@@ -209,13 +210,12 @@ class Decoder_TRANSFORMER(nn.Module):
                 z = torch.stack((z, self.actionBiases[y]), axis=0)
             else:
                 # shift the latent noise vector to be the action noise
-                # y = y.permute((1, 0, 2)).reshape(bs, nframes * self.num_classes)
-                y = y.reshape(bs, nframes * self.num_classes)
+                y = y.permute((1, 0, 2))
                 # z = z + self.actionBiases[y]
-                z = torch.cat((z,y), axis=1)
-                z = z + self.yzEmbedding(z)
+                y = self.yEmbedding(y)
+                z = torch.cat((z[None],y))
+                z = self.yzEmbedding(z.permute((1, 2, 0))).permute((2, 0, 1))
                 # z = z[None]  # sequence of size 1
-                z = z.view(nframes, bs, latent_dim, -1)
             
         timequeries = torch.zeros(nframes, bs, latent_dim, device=z.device)
         

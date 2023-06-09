@@ -22,11 +22,6 @@ def do_epochs(model, datasets, parameters, optimizer, writer):
     
     train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
                                 shuffle=True, num_workers=8, collate_fn=collate)
-    
-    # dataiter = iter(train_iterator)
-    # data = next(dataiter)
-    # print(data['lyrics'].size(), data['music'].size(), data['dance'].size())
-    
 
     logpath = os.path.join(parameters["folder"], "training.log")
     with open(logpath, "w") as logfile:
@@ -34,7 +29,7 @@ def do_epochs(model, datasets, parameters, optimizer, writer):
             dict_loss = train(model, optimizer, train_iterator, model.device)
 
             for key in dict_loss.keys():
-                dict_loss[key] = len(train_iterator)
+                # dict_loss[key] = len(train_iterator) ????
                 writer.add_scalar(f"Loss/{key}", dict_loss[key], epoch)
 
             epochlog = f"Epoch {epoch}, train losses: {dict_loss}"
