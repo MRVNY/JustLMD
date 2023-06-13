@@ -3,7 +3,7 @@ import torch
 
 def lengths_to_mask(lengths):
     max_len = max(lengths)
-    mask = torch.arange(max_len, device=lengths.device).expand(len(lengths), max_len) < lengths.unsqueeze(1)
+    mask = torch.arange(max_len, device='cpu').expand(len(lengths), max_len) < lengths.unsqueeze(1)
     return mask
     
 

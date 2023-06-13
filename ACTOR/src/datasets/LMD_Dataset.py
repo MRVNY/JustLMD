@@ -1,5 +1,7 @@
 import datetime
-from torch.utils.data import Dataset
+# from torch.utils.data import Dataset
+from .dataset import Dataset
+
 
 def toSeconds(time_stamp):
     minutes, seconds = map(float, time_stamp.split(':'))

@@ -59,15 +59,15 @@ if __name__ == '__main__':
         if not os.path.exists(song_path+"/audio.wav"):
            os.system('ffmpeg -i %s/video.mp4 -ab 160k -ac 2 -ar %s -vn %s/audio.wav'%(song_path, str(sr), song_path))
         
-        # Crop 
-        #if the video frame width is higer than 1000p
-        if crop != "full" and int(os.popen('ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 %s/video.mp4'%song_path).read()) > 1000:
-            print("crop: "+ song)
-            os.system('mv %s/video.mp4 %s/tmp.mp4'%(song_path,song_path))
-            if crop == "left":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:0:0" %s/video.mp4'%(song_path,song_path))
-            elif crop == "right":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/2:0" %s/video.mp4'%(song_path,song_path))
-            elif crop == "center":
-                os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/4:0" %s/video.mp4'%(song_path,song_path))
-        os.system('rm %s/tmp.mp4'%song_path)
+        # # Crop 
+        # #if the video frame width is higer than 1000p
+        # if crop != "full" and int(os.popen('ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 %s/video.mp4'%song_path).read()) > 1000:
+        #     print("crop: "+ song)
+        #     os.system('mv %s/video.mp4 %s/tmp.mp4'%(song_path,song_path))
+        #     if crop == "left":
+        #         os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:0:0" %s/video.mp4'%(song_path,song_path))
+        #     elif crop == "right":
+        #         os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/2:0" %s/video.mp4'%(song_path,song_path))
+        #     elif crop == "center":
+        #         os.system('ffmpeg -i %s/tmp.mp4 -filter:v "crop=in_w/2:in_h:in_w/4:0" %s/video.mp4'%(song_path,song_path))
+        # os.system('rm %s/tmp.mp4'%song_path)
