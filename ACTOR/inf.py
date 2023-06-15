@@ -1,4 +1,6 @@
 import os
+import json
+from LMD_Dataset import LMD_Dataset
 
 import matplotlib.pyplot as plt
 import torch
@@ -13,10 +15,14 @@ parameters['device'] = torch.device('cpu')
 
 model, datasets = get_model_and_data(parameters)
 
-state_dict = torch.load("/home/yiyu/JustLM2D/ACTOR/exps/saved/checkpoint_5000.pth.tar")
+LMD_Dict = torch.load('/Users/Marvin/NII_Code/JustLM2D/Pipeline/Test_LMD_Dict_20230613211934.pth')
+indexing = json.load(open("/Users/Marvin/NII_Code/JustLM2D/Pipeline/test_indexing.json", 'r', encoding="utf-8"))
+datasets = LMD_Dataset(LMD_Dict, indexing)
+
+state_dict = torch.load("/Users/Marvin/NII_Code/JustLM2D/ACTOR/exps/saved/checkpoint_5000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
-test_sequence = datasets.LAD_Dict['JustDance2022NailsHairHipsHeelsJustDanceVersionbyTodrickHallGameplay_38']
+test_sequence = datasets.LAD_Dict['AllTheStarsbyKendrickLamarftSZAJustDance2021_46']
 batch = [test_sequence]
 
 batch = collate(batch)
