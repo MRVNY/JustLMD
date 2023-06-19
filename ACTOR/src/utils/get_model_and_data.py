@@ -4,6 +4,14 @@ import torch
 from ..datasets.get_dataset import get_datasets
 from ..recognition.get_model import get_model as get_rec_model
 from ..models.get_model import get_model as get_gen_model
+
+if os.path.exists('/home/yiyu/'):
+    path = '/home/yiyu/JustLM2D/'
+else: path = '/Users/Marvin/NII_Code/JustLM2D/'
+
+import sys
+sys.path.insert(0, path + '/Pipeline/')
+
 from LMD_Dataset import *
 
 
@@ -16,7 +24,7 @@ def get_model_and_data(parameters):
     #     datasets = LMD_Dataset(LMD_Dict, indexing)
     # else: datasets = None
 
-    datasets = LMD_Dataset('')
+    datasets = LMD_Dataset(path + 'Pipeline/')
 
     if parameters["modelname"] == "recognition":
         model = get_rec_model(parameters)

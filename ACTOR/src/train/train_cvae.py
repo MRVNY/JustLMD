@@ -12,12 +12,12 @@ from src.utils.get_model_and_data import get_model_and_data
 
 import json
 
-# if os.path.exists('/home/yiyu/'):
-#     path = '/home/yiyu/JustLM2D/'
-# else: path = '/Users/Marvin/NII_Code/JustLM2D/'
+if os.path.exists('/home/yiyu/'):
+    path = '/home/yiyu/JustLM2D/'
+else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 
-# import sys
-# sys.path.insert(0, path + '/Pipeline/')
+import sys
+sys.path.insert(0, path + '/Pipeline/')
 from LMD_Dataset import LMD_Dataset
 
 # NOTE: epoch

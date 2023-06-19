@@ -1,6 +1,6 @@
 activation: gelu
 archiname: transformer
-batch_size: 20
+batch_size: 100
 cuda: true
 dataset: lm2d
 debug: false
@@ -28,7 +28,7 @@ min_len: -1
 modelname: cvae_transformer_rc_rcxyz_kl
 modeltype: cvae
 nfeats: 3
-njoints: 24
+njoints: 26
 no-vertstrans: false
 num_classes: 896
 num_epochs: 5000

@@ -26,7 +26,7 @@ def collate(batch):
     lenbatch = [180 for b in batch]
 
     databatchTensor = collate_tensors(databatch)
-    databatchTensor = databatchTensor.view(len(databatch), 180, 24, 3).permute(0, 2, 3, 1).float()
+    databatchTensor = databatchTensor.view(len(databatch), 180, 26, 3).permute(0, 2, 3, 1).float()
     labelbatchTensor = collate_tensors(labelbatch).float()
     lenbatchTensor = torch.as_tensor(lenbatch)
 
