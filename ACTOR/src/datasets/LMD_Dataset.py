@@ -1,7 +1,12 @@
 import datetime
 # from torch.utils.data import Dataset
 from .dataset import Dataset
+import os
 
+if os.path.exists('/home/yiyu/JustLM2D/'):
+    home_path = '/home/yiyu/JustLM2D/'
+else:
+    home_path = '/Users/Marvin/NII_Code/JustLM2D/'
 
 def toSeconds(time_stamp):
     minutes, seconds = map(float, time_stamp.split(':'))

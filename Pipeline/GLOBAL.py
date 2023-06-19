@@ -19,6 +19,7 @@ fps = 30
 # sr = 16000
 sr = 18000
 sequenceLength = 6
+lyrics_padding = 180
 
 version = 'JD'+year
 

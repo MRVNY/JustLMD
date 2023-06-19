@@ -1,5 +1,11 @@
 import os
 import json
+
+if os.path.exists('/home/yiyu/'):
+    path = '/home/yiyu/JustLM2D/'
+else: path = '/Users/Marvin/NII_Code/JustLM2D/'
+
+import sys
 from LMD_Dataset import LMD_Dataset
 
 import matplotlib.pyplot as plt
@@ -40,7 +46,7 @@ out = out.permute(2,0,1)
 print(out.shape)
 print("HERE")
 # (180,24,3) to (180,72)
-out = out.reshape(180,72)
+out = out.reshape(180,78)
 print(out.shape)
 
 torch.save(out, 'inf.pt')

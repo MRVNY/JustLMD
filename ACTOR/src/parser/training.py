@@ -72,9 +72,10 @@ def parser():
     
     parameters["num_classes"] = 896 # * 180
     parameters["nfeats"] = 3
-    parameters["njoints"] = 24
+    parameters["njoints"] = 26
     
     # parameters["lr"] = 0.01
+    parameters["batch_size"] = 100
     
     # update lambdas params
     lambdas = {}

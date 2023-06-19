@@ -11,7 +11,14 @@ from src.parser.training import parser
 from src.utils.get_model_and_data import get_model_and_data
 
 import json
-from src.datasets.LMD_Dataset import LMD_Dataset
+
+# if os.path.exists('/home/yiyu/'):
+#     path = '/home/yiyu/JustLM2D/'
+# else: path = '/Users/Marvin/NII_Code/JustLM2D/'
+
+# import sys
+# sys.path.insert(0, path + '/Pipeline/')
+from LMD_Dataset import LMD_Dataset
 
 # NOTE: epoch
 def do_epochs(model, datasets, parameters, optimizer, writer):

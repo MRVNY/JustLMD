@@ -33,7 +33,7 @@ def add_epochs(model, datasets, parameters, optimizer, origepoch):
 
 def main():                
     # parse options
-    parameters, folder, checkpointname, epoch = parser()    
+    parameters, folder, checkpointname, epoch = parser()
     device = parameters["device"]
     
     model, datasets = get_model_and_data(parameters)
