@@ -17,5 +17,5 @@ if __name__ == '__main__':
     print(data['lyrics'].size(), data['music'].size(), data['dance'].size())
     
     seq = random.choice(list(dataset.indexing.values()))
-    dataset.visualize(seq)
-    # dataset.export(seq)
+    # dataset.visualize(seq)
+    dataset.export(seq)

@@ -15,9 +15,9 @@ import librosa
 #Lyrics_Music_Dance_Dataset
 class LMD_Dataset(Dataset): 
     def __init__ (self, data_dir):
-        if(os.path.exists(data_dir+'LMD_Dict.pth') and os.path.exists(data_dir+'indexing.json')):
-            self.LMD_Dict = torch.load('LMD_Dict.pth')
-            self.indexing = json.load(open("indexing.json", 'r'))
+        if(os.path.exists(data_dir+'LMD_Dict.pt') and os.path.exists(data_dir+'indexing.json')):
+            self.LMD_Dict = torch.load(data_dir + 'LMD_Dict.pt')
+            self.indexing = json.load(open(data_dir + "indexing.json", 'r'))
         else: 
             print("Creating new dataset")
             # tokenizer for lyrics
@@ -35,6 +35,8 @@ class LMD_Dataset(Dataset):
                     
                     if song[0] in ['.','_'] or not os.path.isdir(song_path):
                         continue
+                    if not os.path.exists(song_path + '/sliced.json') or not os.path.exists(song_path + '/output-smpl-3d/smplfull.json'):
+                        continue
                     
                     # Load sliced lyrics as timestamps for cutting
                     sliced = json.load(open(song_path + '/sliced.json', 'r'))            
@@ -42,7 +44,7 @@ class LMD_Dataset(Dataset):
                     todo = list(sliced.keys())
                     del todo[-1] # To avoid the last sequence being shorter than 6s
                     
-                    full_dance = json.load(open('%s/smplfull.json'%song_path, 'r'))
+                    full_dance = json.load(open('%s/output-smpl-3d/smplfull.json'%song_path, 'r'))
 
                     for timestamp in todo:
                         # trimed_timestamps = timestamp - start
@@ -119,8 +121,8 @@ class LMD_Dataset(Dataset):
         smpl = SMPLOnnxRuntime()
         o3d_vis = Open3DVisualizer(fps=30, enable_axis=False)
 
-        poses = poses.reshape(180,24,3)
-        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-1))
+        poses = poses.reshape(180,26,3)
+        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-3))
         poses = poses.detach().numpy().astype(np.float32)
 
         global_orient = [[[0,0,0]]]
@@ -151,8 +153,8 @@ class LMD_Dataset(Dataset):
         smpl = SMPLOnnxRuntime()
         o3d_vis = Open3DVisualizer(fps=30, save_img_folder=save_dir, enable_axis=True)
 
-        poses = poses.reshape(180,24,3)
-        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-1))
+        poses = poses.reshape(180,26,3)
+        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-3))
         poses = poses.detach().numpy().astype(np.float32)
 
         global_orient = [[[0,0,0]]]
