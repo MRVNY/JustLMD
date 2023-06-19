@@ -35,3 +35,5 @@ ACTOR/pretrained_models
 ACTOR/exps/lm2d
 
 *.pkl
+
+*.pt
