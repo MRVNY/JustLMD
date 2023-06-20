@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 if os.path.exists('/home/yiyu/'):
     path = '/home/yiyu/JustLM2D/'
@@ -19,35 +20,29 @@ from src.parser.training import parser
 parameters = parser()
 parameters['device'] = torch.device('cpu')
 
-model, datasets = get_model_and_data(parameters)
+test_path = path + '/Songs_Test/'
+test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
-LMD_Dict = torch.load('/Users/Marvin/NII_Code/JustLM2D/Pipeline/Test_LMD_Dict_20230613211934.pth')
-indexing = json.load(open("/Users/Marvin/NII_Code/JustLM2D/Pipeline/test_indexing.json", 'r', encoding="utf-8"))
-datasets = LMD_Dataset(LMD_Dict, indexing)
-
-state_dict = torch.load("/Users/Marvin/NII_Code/JustLM2D/ACTOR/exps/saved/checkpoint_5000.pth.tar", map_location='cpu')
+model, _ = get_model_and_data(parameters)
+state_dict = torch.load(path + "/ACTOR/exps/saved/checkpoint_5000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
-test_sequence = datasets.LAD_Dict['AllTheStarsbyKendrickLamarftSZAJustDance2021_46']
+seq_name = random.choice(test_dataset.indexing.keys())
+test_sequence = test_dataset.LMD_Dict[seq_name]
 batch = [test_sequence]
 
 batch = collate(batch)
 batch['z'] = torch.randn(1, 256)
 
 # inference
-# device
 model.eval()
 batch = model.decoder(batch)
 out = batch['output']
-
 out = out[0]
-# from size(24,3,180) to (180,24,3)
 out = out.permute(2,0,1)
-print(out.shape)
-print("HERE")
-# (180,24,3) to (180,72)
 out = out.reshape(180,78)
-print(out.shape)
 
-torch.save(out, 'inf.pt')
+torch.save(out, test_path + seq_name+'.pt')
 
+
+test_dataset.visualize(seq_name, test_path + seq_name.split('.')[0], inf=True)

@@ -14,10 +14,14 @@ import librosa
 
 #Lyrics_Music_Dance_Dataset
 class LMD_Dataset(Dataset): 
-    def __init__ (self, data_dir):
-        if(os.path.exists(data_dir+'LMD_Dict.pt') and os.path.exists(data_dir+'indexing.json')):
-            self.LMD_Dict = torch.load(data_dir + 'LMD_Dict.pt')
-            self.indexing = json.load(open(data_dir + "indexing.json", 'r'))
+    def __init__ (self, data_dir, songs_collection, name='LMD'):
+        self.dict_path = '%s/%s_Dict.pt'%(data_dir,name)
+        self.indexing_path = '%s/%s_indexing.json'%(data_dir,name)
+        self.songs_collection = songs_collection
+        
+        if os.path.exists(self.dict_path) and os.path.exists(self.indexing_path):
+            self.LMD_Dict = torch.load(self.dict_path)
+            self.indexing = json.load(open(self.indexing_path, 'r'))
         else: 
             print("Creating new dataset")
             # tokenizer for lyrics
@@ -28,7 +32,7 @@ class LMD_Dataset(Dataset):
             indexing = {}
             index = 0
             
-            for year_dir in songs_collection:
+            for year_dir in self.songs_collection:
                 for song in os.listdir(year_dir):
                     print(song)
                     song_path = year_dir + song
@@ -61,10 +65,10 @@ class LMD_Dataset(Dataset):
                         indexing[index] = song+"_"+tag
                         index += 1
 
-            with open("indexing.json", "w", encoding="utf-8") as json_file:
+            with open(self.indexing_path, "w", encoding="utf-8") as json_file:
                 json.dump(indexing, json_file, ensure_ascii=False, indent=4)
                 
-            torch.save(LMD_Dict, "LMD_Dict.pt")
+            torch.save(LMD_Dict, self.dict_path)
 
     def load_music(self, audio_path, start):
         audio = librosa.core.load(audio_path, sr=sr, offset=start, duration=sequenceLength)[0]
@@ -109,17 +113,21 @@ class LMD_Dataset(Dataset):
     def __len__ (self):
         return len(self.indexing.keys())
     
-    def visualize(self,seq_name):
+    def visualize(self,seq_name, save_img_folder=None, inf=False):
+        [song, tag] = seq_name.split("_")
         seq = self.LMD_Dict[seq_name]
         
-        if seq != None:
+        if inf:
+            poses = torch.load('%s/%s/%s.pt'%(self.songs_collection[0], song, seq_name))
+        
+        elif seq != None:
             poses = seq['dance']
         else:
             print("Sequence does not exist")
             return
 
         smpl = SMPLOnnxRuntime()
-        o3d_vis = Open3DVisualizer(fps=30, enable_axis=False)
+        o3d_vis = Open3DVisualizer(fps=30, save_img_folder=save_img_folder, enable_axis=True)
 
         poses = poses.reshape(180,26,3)
         poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-3))
@@ -140,48 +148,12 @@ class LMD_Dataset(Dataset):
 
         o3d_vis.release()
         
-    def export(self, seq_name):
-        seq = self.LMD_Dict[seq_name]
-        
-        if seq != None:
-            poses = seq['dance']
-        else:
-            print("Sequence does not exist")
-            return
-
+    def export(self, seq_name, inf = False):
         save_dir = 'Previews/'+seq_name
-        smpl = SMPLOnnxRuntime()
-        o3d_vis = Open3DVisualizer(fps=30, save_img_folder=save_dir, enable_axis=True)
-
-        poses = poses.reshape(180,26,3)
-        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-3))
-        poses = poses.detach().numpy().astype(np.float32)
-
-        global_orient = [[[0,0,0]]]
-        trans = [0,0,0]
-
-        for body in poses:
-            data = smpl.forward(body[None], global_orient)
-
-            [vertices, joints, faces] = data
-            vertices = vertices[0].squeeze()
-            joints = joints[0].squeeze()
-            faces = faces.astype(np.int32)
-
-            o3d_vis.update(vertices, faces, trans, R_along_axis=[0, 0, 0], waitKey=1)
-
-        o3d_vis.release()
+        self.visualize(seq_name, save_img_folder=save_dir, inf=inf)
         
         # Load audio and lyrics
-        [song, tag] = seq_name.split("_")
-        for year_dir in songs_collection:
-            if os.path.isdir(year_dir + "/" + song):
-                song_path = year_dir + "/" + song
-                slicecd = json.load(open(song_path + "/sliced.json", "r"))
-                for timestamp in slicecd:
-                    if str(int(toSeconds(timestamp))) == tag:
-                        lyrics = slicecd[timestamp]
-                        os.system('ffmpeg -i %s/audio.wav -ss "%s" -t 00:06 -c copy %s/audio.wav'%(song_path, timestamp, save_dir))
+        lyrics = self.get_raw_audio_lyrics(save_dir, seq_name)
         
         # Merge Video audio and lyrics
         os.system('ffmpeg -framerate 30 -i ' + save_dir + '/temp_%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ' + save_dir + '/mesh.mp4')
@@ -192,3 +164,17 @@ class LMD_Dataset(Dataset):
         os.system('rm %s/tmp.mp4'%save_dir)
         os.system('rm %s/mesh.mp4'%save_dir)
         os.system('rm %s/audio.wav'%save_dir)
+        
+    
+    def get_raw_audio_lyrics(self, save_dir, seq_name):
+        [song, tag] = seq_name.split("_")
+        for year_dir in self.songs_collection:
+            if os.path.isdir(year_dir + "/" + song):
+                song_path = year_dir + "/" + song
+                slicecd = json.load(open(song_path + "/sliced.json", "r"))
+                for timestamp in slicecd:
+                    if str(int(toSeconds(timestamp))) == tag:
+                        lyrics = slicecd[timestamp]
+                        os.system('ffmpeg -i %s/audio.wav -ss "%s" -t 00:06 -c copy %s/audio.wav'%(song_path, timestamp, save_dir))
+                        return lyrics
+                    
