@@ -28,8 +28,8 @@ class LMD_Dataset(Dataset):
             tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
             model = BertModel.from_pretrained('bert-base-uncased')
             
-            LMD_Dict = {}
-            indexing = {}
+            self.LMD_Dict = {}
+            self.indexing = {}
             index = 0
             
             for year_dir in self.songs_collection:
@@ -57,18 +57,20 @@ class LMD_Dataset(Dataset):
                         tag = str(int(seconds))
                         
                         # LAD Dict
-                        data = {'lyrics':self.load_lyrics(sliced[timestamp], tokenizer, model), \
-                            'music':self.load_music('%s/audio.wav'%song_path, seconds), \
-                            'dance':self.load_dance(full_dance, trimed_timestamp)}
+                        dance_data = self.load_dance(full_dance, trimed_timestamp)
+                        if dance_data!=None:
+                            data = {'lyrics':self.load_lyrics(sliced[timestamp], tokenizer, model), \
+                                'music':self.load_music('%s/audio.wav'%song_path, seconds), \
+                                'dance':dance_data}
                         
-                        LMD_Dict[song+"_"+tag] = data
-                        indexing[index] = song+"_"+tag
-                        index += 1
+                            self.LMD_Dict[song+"_"+tag] = data
+                            self.indexing[index] = song+"_"+tag
+                            index += 1
 
             with open(self.indexing_path, "w", encoding="utf-8") as json_file:
-                json.dump(indexing, json_file, ensure_ascii=False, indent=4)
+                json.dump(self.indexing, json_file, ensure_ascii=False, indent=4)
                 
-            torch.save(LMD_Dict, self.dict_path)
+            torch.save(self.LMD_Dict, self.dict_path)
 
     def load_music(self, audio_path, start):
         audio = librosa.core.load(audio_path, sr=sr, offset=start, duration=sequenceLength)[0]
@@ -83,15 +85,17 @@ class LMD_Dataset(Dataset):
     def load_dance(self, full_dance, timestamp):
         dance = []
         start = toSeconds(timestamp)*fps
+        all_frames = list(full_dance.keys())
         
         for offset in range(sequenceLength*fps):
             stamp = str(int(start + offset)).zfill(6)
-            poses = full_dance[stamp]['annots'][0]['poses'][0]
-            Th = full_dance[stamp]['annots'][0]['Th'][0]
-            Rh = full_dance[stamp]['annots'][0]['Rh'][0]
-            dance.append(poses + Th + Rh)
-            
-        
+            if stamp in all_frames:
+                poses = full_dance[stamp]['annots'][0]['poses'][0]
+                Th = full_dance[stamp]['annots'][0]['Th'][0]
+                Rh = full_dance[stamp]['annots'][0]['Rh'][0]
+                dance.append(poses + Th + Rh)
+
+        if len(dance) != sequenceLength*fps: return None
         dance = torch.from_numpy(np.array(dance))
         return dance
 
