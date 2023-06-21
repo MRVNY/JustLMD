@@ -133,37 +133,49 @@ class LMD_Dataset(Dataset):
         smpl = SMPLOnnxRuntime()
         o3d_vis = Open3DVisualizer(fps=30, save_img_folder=save_img_folder, enable_axis=True)
 
-        poses = poses.reshape(180,26,3)
-        poses = torch.index_select(poses, dim=1, index=torch.arange(0, poses.size(1)-3))
-        poses = poses.detach().numpy().astype(np.float32)
-
-        global_orient = [[[0,0,0]]]
-        trans = [0,0,0]
-
-        for body in poses:
-            data = smpl.forward(body[None], global_orient)
+        poses = poses.reshape(180,26,3).detach().numpy().astype(np.float32)
+        
+        for pose in poses:
+            trans = (-pose[-2, :]).tolist()
+            rot = pose[-1, :]
+            body = pose[:-3, :]
+            body[0] = rot
+            # print(trans, rot, body.shape)
+            
+            data = smpl.forward(body[None], [[[0,0,0]]])
 
             [vertices, joints, faces] = data
             vertices = vertices[0].squeeze()
             joints = joints[0].squeeze()
             faces = faces.astype(np.int32)
+            
+            # vertices -= trans
+            # trans = [trans[1], trans[0], trans[2]]
+            # trans = [-trans[0], -trans[1], -trans[2]]
+            # trans = [trans[0], trans[1], 0]
 
-            o3d_vis.update(vertices, faces, trans, R_along_axis=[0, 0, 0], waitKey=1)
+            o3d_vis.update(vertices, faces, trans,  R_along_axis=(np.pi, 0, 0), waitKey=1)
 
         o3d_vis.release()
         
-    def export(self, seq_name, inf = False):
+        
+    def export(self, seq_name, inf=False):
         save_dir = 'Previews/'+seq_name
         self.visualize(seq_name, save_img_folder=save_dir, inf=inf)
         
         # Load audio and lyrics
-        lyrics = self.get_raw_audio_lyrics(save_dir, seq_name)
+        lyrics = str(self.get_raw_audio_lyrics(save_dir, seq_name))
+        lyrics = lyrics.replace('\'', '')
+        lyrics = lyrics.replace('\"', '')
+        lyrics = lyrics.replace(',', '\,')
+        lyrics = lyrics.replace('.', '\.')
+        print('\n',lyrics,'\n')
         
         # Merge Video audio and lyrics
         os.system('ffmpeg -framerate 30 -i ' + save_dir + '/temp_%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ' + save_dir + '/mesh.mp4')
         os.system('ffmpeg -i %s/mesh.mp4 -i %s/audio.wav -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 %s/tmp.mp4'%(save_dir, save_dir, save_dir))
-        os.system("ffmpeg -i %s/tmp.mp4 -vf \"drawtext=fontfile=Roboto-Regular.ttf:text='%s':fontsize=30:x=(w-tw)/2:y=h-th-10:fontcolor=black\" -codec:a copy %s/%s.mp4"%(save_dir, lyrics, save_dir, seq_name))
-        
+        os.system("ffmpeg -i %s/tmp.mp4 -vf \"drawtext=fontfile=Roboto-Regular.ttf:text=%s:fontsize=30:x=(w-tw)/2:y=h-th-10:fontcolor=black\" -codec:a copy %s/%s.mp4"%(save_dir, lyrics, save_dir, seq_name))
+                
         os.system('rm %s/*.png'%save_dir)
         os.system('rm %s/tmp.mp4'%save_dir)
         os.system('rm %s/mesh.mp4'%save_dir)

@@ -49,4 +49,5 @@ out = out.reshape(180,78)
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
 
 
-test_dataset.export(seq_name, test_path + seq_name.split('.')[0], inf=True)
+# test_dataset.visualize(seq_name, test_path + seq_name.split('.')[0], inf=True)
+test_dataset.export(seq_name, inf=True)
