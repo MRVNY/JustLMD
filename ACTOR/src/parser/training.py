@@ -1,4 +1,10 @@
 import os
+import datetime
+import json
+
+if os.path.exists('/home/yiyu/'):
+    path = '/home/yiyu/JustLM2D/'
+else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 
 from .base import add_misc_options, add_cuda_options, adding_cuda, ArgumentParser
 from .tools import save_args
@@ -22,21 +28,21 @@ def parser():
     parser = ArgumentParser()
 
     # misc options
-    add_misc_options(parser)
+    # add_misc_options(parser)
     # --folder exps/humanact12
 
     # cuda options
-    add_cuda_options(parser)
+    # add_cuda_options(parser)
     
     # training options
-    add_training_options(parser)
+    # add_training_options(parser)
     # --batch_size 20 
     # --num_epochs 5000 
     # --snapshot 100 
     # --lr 0.0001 
 
     # dataset options
-    add_dataset_options(parser)
+    # add_dataset_options(parser)
     # --dataset humanact12 
     # --pose_rep rot6d 
     # --num_frames 60 
@@ -45,7 +51,7 @@ def parser():
     # --no-vertstrans 
 
     # model options
-    add_model_options(parser)
+    # add_model_options(parser)
     # --modelname cvae_transformer_rc_rcxyz_kl 
     # --lambda_kl 1e-5 
     # --jointstype vertices 
@@ -55,36 +61,16 @@ def parser():
     
     # remove None params, and create a dictionnary
     parameters = {key: val for key, val in vars(opt).items() if val is not None}
-    parameters['glob'] = True 
-    parameters['translation'] = True
-    parameters['no-vertstrans'] = False
-    parameters['modelname'] = 'cvae_transformer_rc_rcxyz_kl'
-    # print(parameters) # {'expname': 'exps', 'folder': 'exps/humanact12', 'cuda': True, 'batch_size': 20, 'num_epochs': 5000, 'lr': 0.0001, 'snapshot': 100, 'dataset': 'humanact12', 'num_frames': 60, 'sampling': 'conseq', 'sampling_step': 1, 'pose_rep': 'rot6d', 'max_len': -1, 'min_len': -1, 'num_seq_max': -1, 'glob': True, 'glob_rot': [3.141592653589793, 0, 0], 'translation': True, 'debug': False, 'modelname': 'cvae_transformer_rc_rcxyz_kl', 'latent_dim': 256, 'lambda_kl': 1e-05, 'lambda_rc': 1.0, 'lambda_rcxyz': 1.0, 'jointstype': 'vertices', 'vertstrans': False, 'num_layers': 8, 'activation': 'gelu'}
+    parameters.update(json.load(open(path + '/ACTOR/src/parser/config.json', "r")))
 
-    # parse modelname
-    ret = parse_modelname(parameters["modelname"])
-    # print(ret)
-    parameters["modeltype"], parameters["archiname"], parameters["losses"] = ret
-    parameters['modeltype'] = 'cvae'
-    parameters['archiname'] = 'transformer'
-    # parameters['losses'] = ['rc', 'rcxyz', 'kl']
-    parameters['losses'] = ['rc', 'kl']
-    
-    parameters["num_classes"] = 896 # * 180
-    parameters["nfeats"] = 3
-    parameters["njoints"] = 26
-    
-    # parameters["lr"] = 0.01
-    parameters["batch_size"] = 100
-    
     # update lambdas params
     lambdas = {}
     for loss in parameters["losses"]:
-        lambdas[loss] = opt.__getattribute__(f"lambda_{loss}")
+        # lambdas[loss] = opt.__getattribute__(f"lambda_{loss}")
+        lambdas[loss] = parameters[f"lambda_{loss}"]
     parameters["lambdas"] = lambdas
     
-    if "folder" not in parameters:
-        parameters["folder"] = construct_checkpointname(parameters, parameters["expname"])
+    parameters["folder"] = "exps/" + parameters["dataset"] + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     os.makedirs(parameters["folder"], exist_ok=True)
     save_args(parameters, folder=parameters["folder"])

@@ -41,7 +41,7 @@ class TimeEncoding(nn.Module):
 
 class Encoder_TRANSFORMER(nn.Module):
     def __init__(self, modeltype, njoints, nfeats, num_frames, num_classes, translation, pose_rep, glob, glob_rot,
-                 latent_dim=256, ff_size=1024, num_layers=4, num_heads=4, dropout=0.1,
+                 latent_dim=512, ff_size=1024, num_layers=4, num_heads=4, dropout=0.1,
                  ablation=None, activation="gelu", **kargs):
         super().__init__()
         
@@ -76,7 +76,8 @@ class Encoder_TRANSFORMER(nn.Module):
             self.muQuery = nn.Parameter(torch.randn(self.num_classes, self.latent_dim))
             self.sigmaQuery = nn.Parameter(torch.randn(self.num_classes, self.latent_dim))
         
-        self.skelEmbedding = nn.Linear(self.input_feats, self.latent_dim)
+        # Linear Transformation
+        # self.skelEmbedding = nn.Linear(self.input_feats, self.latent_dim)
         self.xyEmbedding = nn.Linear(self.num_classes + self.input_feats, self.latent_dim)
         self.muSigmaEmbedding = nn.Linear(self.num_frames, 2)
         
@@ -100,8 +101,7 @@ class Encoder_TRANSFORMER(nn.Module):
         
         # embedding of the skeleton
         # x = self.skelEmbedding(x)
-        xseq = self.xyEmbedding(torch.cat((y, x), axis=2))
-        xseq = self.muSigmaEmbedding(xseq.permute((1, 2, 0))).permute((2, 0, 1))
+        xy = self.xyEmbedding(torch.cat((y, x), axis=2)) # x + y -> latent_dim
 
         # only for ablation / not used in the final model
         if self.ablation == "average_encoder":
@@ -118,27 +118,46 @@ class Encoder_TRANSFORMER(nn.Module):
             logvar = self.sigma_layer(z)
         else:
             # adding the mu and sigma queries
-            # xseq = torch.cat((self.muQuery[y][None], self.sigmaQuery[y][None], x), axis=0)
-            # xseq = torch.cat((y, x), axis=2)
+            # xy = torch.cat((self.muQuery[y][None], self.sigmaQuery[y][None], x), axis=0)
+            # xy = torch.cat((y, x), axis=2)
 
             # add positional encoding
-            # xseq = self.sequence_pos_encoder(xseq)
+            xy = self.sequence_pos_encoder(xy)
 
             # create a bigger mask, to allow attend to mu and sigma
-            muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
+            # muandsigmaMask = torch.ones((bs, 2), dtype=bool, device=x.device)
             # maskseq = torch.cat((muandsigmaMask, mask), axis=1)
 
-            # final = self.seqTransEncoder(xseq, src_key_padding_mask=~mask)
-            final = self.seqTransEncoder(xseq, src_key_padding_mask=~muandsigmaMask)
+            xy = self.seqTransEncoder(xy, src_key_padding_mask=~mask)
+            
+            xy = xy.permute((2, 1, 0))
+            
+            final = self.muSigmaEmbedding(xy) # num_frames -> 2
+            final = final.permute((2, 1, 0))
+            
             mu = final[0]
             logvar = final[1]
             
         return {"mu": mu, "logvar": logvar}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # NOTE: Transformer decoder is here!
 class Decoder_TRANSFORMER(nn.Module):
     def __init__(self, modeltype, njoints, nfeats, num_frames, num_classes, translation, pose_rep, glob, glob_rot,
-                 latent_dim=256, ff_size=1024, num_layers=4, num_heads=4, dropout=0.1, activation="gelu",
+                 latent_dim=512, ff_size=1024, num_layers=4, num_heads=4, dropout=0.1, activation="gelu",
                  ablation=None, **kargs):
         super().__init__()
 
@@ -213,11 +232,11 @@ class Decoder_TRANSFORMER(nn.Module):
                 y = y.permute((1, 0, 2))
                 # z = z + self.actionBiases[y]
                 y = self.yEmbedding(y)
-                z = torch.cat((z[None],y))
-                z = self.yzEmbedding(z.permute((1, 2, 0))).permute((2, 0, 1))
-                # z = z[None]  # sequence of size 1
+                zy = torch.cat((z[None],y))
+                zy = self.yzEmbedding(zy.permute((1, 2, 0))).permute((2, 0, 1))
+                # zy = zy[None]  # sequence of size 1
             
-        timequeries = torch.zeros(nframes, bs, latent_dim, device=z.device)
+        timequeries = torch.zeros(nframes, bs, latent_dim, device=zy.device)
         
         # only for ablation / not used in the final model
         if self.ablation == "time_encoding":
@@ -225,7 +244,7 @@ class Decoder_TRANSFORMER(nn.Module):
         else:
             timequeries = self.sequence_pos_encoder(timequeries)
         
-        output = self.seqTransDecoder(tgt=timequeries, memory=z,
+        output = self.seqTransDecoder(tgt=timequeries, memory=zy,
                                       tgt_key_padding_mask=~mask)
         
         output = self.finallayer(output).reshape(nframes, bs, njoints, nfeats)

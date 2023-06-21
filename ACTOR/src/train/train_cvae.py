@@ -19,6 +19,7 @@ else: path = '/Users/Marvin/NII_Code/JustLM2D/'
 import sys
 sys.path.insert(0, path + '/Pipeline/')
 from LMD_Dataset import LMD_Dataset
+# from GLOBAL import *
 
 # NOTE: epoch
 def do_epochs(model, datasets, parameters, optimizer, writer):

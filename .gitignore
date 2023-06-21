@@ -29,7 +29,6 @@ cfg_*.yml
 OLD*
 Other*
 
-Actor/exps
 ACTOR/models
 ACTOR/pretrained_models
 ACTOR/exps/lm2d
@@ -37,3 +36,6 @@ ACTOR/exps/lm2d
 *.pkl
 
 *.pt
+
+ACTOR/exps/*/*.tar
+ACTOR/exps/*/!checkpoint_5000.pth.tar
