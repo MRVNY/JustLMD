@@ -8,8 +8,10 @@ import random
 if __name__ == '__main__':
     freeze_support()
     
-    dataset = LMD_Dataset(path + '/Pipeline/', songs_collection)
-    dataloader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=1)
+    dataset = LMD_Dataset(path + '/Pipeline/', songs_collection, name='LMD_New_Embedding')
+    sample = dataset.LMD_Dict['SmalltownBoybyBronskiBeatJustDance2022ComiCon_239']
+    print(sample['lyrics'].shape, sample['music'].shape, sample['dance'].shape)
+    dataloader = DataLoader(dataset=dataset, batch_size=1, shuffle=True, num_workers=1)
 
     dataiter = iter(dataloader)
     data = next(dataiter)

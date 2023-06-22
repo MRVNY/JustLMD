@@ -7,6 +7,7 @@ from nosmpl.vis.vis_o3d import Open3DVisualizer
 
 import numpy as np
 import torch
+import torch.nn as nn
 import os
 
 from transformers import BertTokenizer, BertModel
@@ -18,6 +19,8 @@ class LMD_Dataset(Dataset):
         self.dict_path = '%s/%s_Dict.pt'%(data_dir,name)
         self.indexing_path = '%s/%s_indexing.json'%(data_dir,name)
         self.songs_collection = songs_collection
+        
+        self.lyricsEmbedding = nn.Linear(768, 128)
         
         if os.path.exists(self.dict_path) and os.path.exists(self.indexing_path):
             self.LMD_Dict = torch.load(self.dict_path)
@@ -106,7 +109,13 @@ class LMD_Dataset(Dataset):
         lyrics_embeddings = outputs[0][:,0,:]
         lyrics_embeddings = outputs.last_hidden_state[0].detach()
         
-        lyrics_embeddings = torch.nn.functional.pad(lyrics_embeddings, pad=(0,0,0,lyrics_padding - lyrics_embeddings.size(0)), mode='constant', value=0)
+        flexibleEmbedding = nn.Linear(lyrics_embeddings.size(0), sequenceLength*fps)
+
+        lyrics_embeddings = lyrics_embeddings.permute(1,0)
+        lyrics_embeddings = flexibleEmbedding(lyrics_embeddings)
+        lyrics_embeddings = lyrics_embeddings.permute(1,0)
+        lyrics_embeddings = self.lyricsEmbedding(lyrics_embeddings).detach()
+        
         return lyrics_embeddings
 
     def __getitem__(self,index):
