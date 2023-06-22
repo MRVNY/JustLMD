@@ -38,4 +38,5 @@ ACTOR/exps/lm2d
 *.pt
 
 ACTOR/exps/*/*.tar
-ACTOR/exps/*/!checkpoint_5000.pth.tar
+!checkpoint_5000.pth.tar
+!checkpoint_4900.pth.tar
