@@ -148,7 +148,7 @@ class LMD_Dataset(Dataset):
             trans = (-pose[-2, :]).tolist()
             rot = pose[-1, :]
             body = pose[:-3, :]
-            body[0] = rot
+            # body[0] = rot
             # print(trans, rot, body.shape)
             
             data = smpl.forward(body[None], [[[0,0,0]]])
@@ -163,7 +163,7 @@ class LMD_Dataset(Dataset):
             # trans = [-trans[0], -trans[1], -trans[2]]
             # trans = [trans[0], trans[1], 0]
 
-            o3d_vis.update(vertices, faces, trans,  R_along_axis=(np.pi, 0, 0), waitKey=1)
+            o3d_vis.update(vertices, faces, trans,  R_along_axis=(0, 0, 0), waitKey=1)
 
         o3d_vis.release()
         

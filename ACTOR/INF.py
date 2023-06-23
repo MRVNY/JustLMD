@@ -27,7 +27,7 @@ test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
 model = get_gen_model(parameters)
-state_dict = torch.load(path + "/ACTOR/exps/0619/checkpoint_5000.pth.tar", map_location='cpu')
+state_dict = torch.load(path + "/ACTOR/exps/lm2d20230622-125926/checkpoint_5000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
 seq_name = random.choice(list(test_dataset.indexing.values()))
@@ -35,7 +35,7 @@ test_sequence = test_dataset.LMD_Dict[seq_name]
 batch = [test_sequence]
 
 batch = collate(batch)
-batch['z'] = torch.randn(1, 256)
+batch['z'] = torch.randn(1, 512)
 
 # inference
 model.eval()
@@ -49,5 +49,5 @@ out = out.reshape(180,78)
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
 
 
-# test_dataset.visualize(seq_name, test_path + seq_name.split('.')[0], inf=True)
-test_dataset.export(seq_name, inf=True)
+test_dataset.visualize(seq_name, inf=True)
+# test_dataset.export(seq_name, inf=True)

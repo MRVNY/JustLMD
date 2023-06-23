@@ -24,7 +24,7 @@ def get_model_and_data(parameters):
     #     datasets = LMD_Dataset(LMD_Dict, indexing)
     # else: datasets = None
 
-    datasets = LMD_Dataset(path + 'Pipeline/', [path + 'Songs_2020/', path + 'Songs_2021/', path + 'Songs_2022/'])
+    datasets = LMD_Dataset(path + 'Pipeline/', [path + 'Songs_2020/', path + 'Songs_2021/', path + 'Songs_2022/'], name='LMD_New_Embedding')
 
     if parameters["modelname"] == "recognition":
         model = get_rec_model(parameters)

@@ -2,7 +2,7 @@
     "expname": "exps",
     "folder": "exps/lm2d",
     "cuda": "True",
-    "batch_size": 180,
+    "batch_size": 200,
     "num_epochs": 5000,
     "lr": 0.0001,
     "snapshot": 100,
@@ -37,7 +37,7 @@
     "no-vertstrans": "False",
     "ablation": "None",
 
-    "num_classes": 896,
+    "num_classes": 256,
     "nfeats" : 3,
     "njoints" : 26
 }
