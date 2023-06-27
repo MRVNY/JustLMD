@@ -30,8 +30,8 @@ model = get_gen_model(parameters)
 state_dict = torch.load(path + "/ACTOR/exps/lm2d20230626-145127/checkpoint_5000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
-# seq_name = random.choice(list(test_dataset.indexing.values()))
-seq_name = 'AllTheStarsbyKendrickLamarftSZAJustDance2021_116'
+seq_name = random.choice(list(test_dataset.indexing.values()))
+# seq_name = 'AllTheStarsbyKendrickLamarftSZAJustDance2021_116'
 test_sequence = test_dataset.LMD_Dict[seq_name]
 batch = [test_sequence]
 
