@@ -27,10 +27,11 @@ test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
 model = get_gen_model(parameters)
-state_dict = torch.load(path + "/ACTOR/exps/lm2d20230622-125926/checkpoint_5000.pth.tar", map_location='cpu')
+state_dict = torch.load(path + "/ACTOR/exps/lm2d20230624-105702/checkpoint_10000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
-seq_name = random.choice(list(test_dataset.indexing.values()))
+# seq_name = random.choice(list(test_dataset.indexing.values()))
+seq_name = 'AllTheStarsbyKendrickLamarftSZAJustDance2021_116'
 test_sequence = test_dataset.LMD_Dict[seq_name]
 batch = [test_sequence]
 
@@ -47,7 +48,6 @@ out = out.reshape(180,78)
 
 [song, tag] = seq_name.split('_')
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
-
 
 # test_dataset.visualize(seq_name, inf=True)
 test_dataset.export(seq_name, inf=True)

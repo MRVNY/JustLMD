@@ -163,7 +163,8 @@ class LMD_Dataset(Dataset):
             # trans = [-trans[0], -trans[1], -trans[2]]
             # trans = [trans[0], trans[1], 0]
 
-            o3d_vis.update(vertices, faces, trans,  R_along_axis=(0, 0, 0), waitKey=1)
+            # o3d_vis.update(vertices, faces, trans,  R_along_axis=(0, 0, 0), waitKey=1)
+            o3d_vis.update(vertices, faces, [0,0,0],  R_along_axis=(0, 0, 0), waitKey=1)
 
         o3d_vis.release()
         
