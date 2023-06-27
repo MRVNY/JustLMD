@@ -27,7 +27,7 @@ test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
 model = get_gen_model(parameters)
-state_dict = torch.load(path + "/ACTOR/exps/lm2d20230624-105702/checkpoint_10000.pth.tar", map_location='cpu')
+state_dict = torch.load(path + "/ACTOR/exps/lm2d20230626-145127/checkpoint_5000.pth.tar", map_location='cpu')
 model.load_state_dict(state_dict)
 
 # seq_name = random.choice(list(test_dataset.indexing.values()))
@@ -44,7 +44,9 @@ batch = model.decoder(batch)
 out = batch['output']
 out = out[0]
 out = out.permute(2,0,1)
-out = out.reshape(180,78)
+out = out.reshape(180,72)
+
+out = torch.cat([out, torch.zeros((180,6))], 1)
 
 [song, tag] = seq_name.split('_')
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
