@@ -23,11 +23,12 @@ from src.parser.training import parser
 parameters = parser()
 parameters['device'] = torch.device('cpu')
 
+exp_name = 'lm2d20230626-145127'
 test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
 model = get_gen_model(parameters)
-state_dict = torch.load(path + "/ACTOR/exps/lm2d20230626-145127/checkpoint_5000.pth.tar", map_location='cpu')
+state_dict = torch.load(path + "/ACTOR/exps/%s/checkpoint_5000.pth.tar"%exp_name, map_location='cpu')
 model.load_state_dict(state_dict)
 
 seq_name = random.choice(list(test_dataset.indexing.values()))
@@ -52,4 +53,4 @@ out = torch.cat([out, torch.zeros((180,6))], 1)
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
 
 # test_dataset.visualize(seq_name, inf=True)
-test_dataset.export(seq_name, inf=True)
+test_dataset.export(seq_name, save_dir='Previews/%s/%s'%(exp_name,seq_name), inf=True)

@@ -169,8 +169,9 @@ class LMD_Dataset(Dataset):
         o3d_vis.release()
         
         
-    def export(self, seq_name, inf=False):
-        save_dir = 'Previews/'+seq_name
+    def export(self, seq_name, save_dir=None, inf=False):
+        if save_dir==None:
+            save_dir = 'Previews/'+seq_name
         self.visualize(seq_name, save_img_folder=save_dir, inf=inf)
         
         # Load audio and lyrics
