@@ -22,7 +22,7 @@ def collate_tensors(batch):
 
 def collate(batch):
     # print('\nBEFORE',batch[0]['dance'].shape)
-    databatch = [torch.concat([b['dance'][:,3*25+1:3*26],b['dance'][:,3:3*24]], 1) for b in batch]
+    databatch = [torch.concat([b['dance'][:,-3:],b['dance'][:,3:3*24]], 1) for b in batch]
     # print(databatch[0].shape,'AFTER\n')
     
     labelbatch = [torch.cat((b['music'], b['lyrics']), dim=1) for b in batch]

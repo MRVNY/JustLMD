@@ -23,7 +23,7 @@ from src.parser.training import parser
 parameters = parser()
 parameters['device'] = torch.device('cpu')
 
-exp_name = 'lm2d20230626-145127'
+exp_name = 'lm2d20230627-171206'
 test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
@@ -52,5 +52,5 @@ out = torch.cat([out, torch.zeros((180,6))], 1)
 [song, tag] = seq_name.split('_')
 torch.save(out,'%s/%s.pt'%(test_path + song, seq_name))
 
-# test_dataset.visualize(seq_name, inf=True)
-test_dataset.export(seq_name, save_dir='Previews/%s/%s'%(exp_name,seq_name), inf=True)
+test_dataset.visualize(seq_name, inf=True)
+# test_dataset.export(seq_name, save_dir='Previews/%s/%s'%(exp_name,seq_name), inf=True)
