@@ -26,6 +26,7 @@ parameters['device'] = torch.device('cpu')
 exp_name = 'lm2d20230622-125926' #with glob and trans
 # exp_name = 'lm2d20230624-105702' #with glob and trans
 # exp_name = 'lm2d20230626-145127' #without glob and trans
+# exp_name = 'lm2d20230627-171206'
 test_path = path + '/Songs_Test/'
 test_dataset = LMD_Dataset(path + '/Pipeline/', [test_path], name='Test')
 
