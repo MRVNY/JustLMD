@@ -126,7 +126,7 @@ class LMD_Dataset(Dataset):
     def __len__ (self):
         return len(self.indexing.keys())
     
-    def visualize(self,seq_name, save_img_folder=None, inf=False):
+    def visualize(self,seq_name, save_img_folder=None, inf=False, glob_trans=True):
         [song, tag] = seq_name.split("_")
         seq = self.LMD_Dict[seq_name]
         
@@ -145,10 +145,10 @@ class LMD_Dataset(Dataset):
         poses = poses.reshape(180,26,3).detach().numpy().astype(np.float32)
         
         for pose in poses:
-            trans = (-pose[-2, :]).tolist()
+            trans = (pose[-2, :]).tolist()
             rot = pose[-1, :]
             body = pose[:-3, :]
-            # body[0] = rot
+            if glob_trans: body[0] = rot
             # print(trans, rot, body.shape)
             
             data = smpl.forward(body[None], [[[0,0,0]]])
@@ -158,21 +158,20 @@ class LMD_Dataset(Dataset):
             joints = joints[0].squeeze()
             faces = faces.astype(np.int32)
             
-            # vertices -= trans
+            vertices += trans
             # trans = [trans[1], trans[0], trans[2]]
-            # trans = [-trans[0], -trans[1], -trans[2]]
-            # trans = [trans[0], trans[1], 0]
+            trans = [trans[0], trans[1], 0]
 
-            # o3d_vis.update(vertices, faces, trans,  R_along_axis=(0, 0, 0), waitKey=1)
-            o3d_vis.update(vertices, faces, [0,0,0],  R_along_axis=(0, 0, 0), waitKey=1)
+            if glob_trans: o3d_vis.update(vertices, faces, trans,  R_along_axis=(-np.pi, 0, 0), waitKey=1)
+            else: o3d_vis.update(vertices, faces, [0,0,0],  R_along_axis=(0, 0, 0), waitKey=1)
 
         o3d_vis.release()
         
         
-    def export(self, seq_name, save_dir=None, inf=False):
+    def export(self, seq_name, save_dir=None, inf=False, glob_trans=True):
         if save_dir==None:
             save_dir = 'Previews/'+seq_name
-        self.visualize(seq_name, save_img_folder=save_dir, inf=inf)
+        self.visualize(seq_name, save_img_folder=save_dir, inf=inf, glob_trans=glob_trans)
         
         # Load audio and lyrics
         lyrics = str(self.get_raw_audio_lyrics(save_dir, seq_name))
