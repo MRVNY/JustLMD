@@ -12,6 +12,8 @@ from .dataset import add_dataset_options
 from .model import add_model_options, parse_modelname
 from .checkpoint import construct_checkpointname
 
+TRAIN_MODE = 78 #78 bits: 24joints + global rotation + transition
+# TRAIN_MODE = 72 #72 bits: 24joints
 
 def add_training_options(parser):
     group = parser.add_argument_group('Training options')
@@ -61,7 +63,10 @@ def parser():
     
     # remove None params, and create a dictionnary
     parameters = {key: val for key, val in vars(opt).items() if val is not None}
-    parameters.update(json.load(open(path + '/ACTOR/src/parser/config.json', "r")))
+    if TRAIN_MODE == 72:
+        parameters.update(json.load(open(path + '/TransVAE_Baseline/src/parser/config72.json', "r")))
+    if TRAIN_MODE == 78:
+        parameters.update(json.load(open(path + '/TransVAE_Baseline/src/parser/config78.json', "r")))
 
     # update lambdas params
     lambdas = {}

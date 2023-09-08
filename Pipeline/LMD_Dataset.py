@@ -145,11 +145,10 @@ class LMD_Dataset(Dataset):
         poses = poses.reshape(180,26,3).detach().numpy().astype(np.float32)
         
         for pose in poses:
+            body = pose[:-3, :]
             trans = (pose[-2, :]).tolist()
             rot = pose[-1, :]
-            body = pose[:-3, :]
-            if glob_trans: body[0] = rot
-            # print(trans, rot, body.shape)
+            body[0] = rot
             
             data = smpl.forward(body[None], [[[0,0,0]]])
 
@@ -158,9 +157,9 @@ class LMD_Dataset(Dataset):
             joints = joints[0].squeeze()
             faces = faces.astype(np.int32)
             
-            vertices += trans
-            # trans = [trans[1], trans[0], trans[2]]
-            trans = [trans[0], trans[1], 0]
+            if glob_trans:
+                vertices += trans
+                trans = [trans[0], trans[1], 0]
 
             if glob_trans: o3d_vis.update(vertices, faces, trans,  R_along_axis=(-np.pi, 0, 0), waitKey=1)
             else: o3d_vis.update(vertices, faces, [0,0,0],  R_along_axis=(0, 0, 0), waitKey=1)

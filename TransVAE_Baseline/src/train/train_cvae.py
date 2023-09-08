@@ -4,7 +4,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from torch.utils.data import DataLoader
 from src.train.trainer import train
-from src.utils.tensors import collate
+from src.utils.tensors import collate72, collate78
 import src.utils.fixseed  # noqa
 
 from src.parser.training import parser
@@ -21,6 +21,9 @@ sys.path.insert(0, path + '/Pipeline/')
 from LMD_Dataset import LMD_Dataset
 # from GLOBAL import *
 
+TRAIN_MODE = 78 #78 bits: 24joints + global rotation + transition
+# TRAIN_MODE = 72 #72 bits: 24joints
+
 # NOTE: epoch
 def do_epochs(model, datasets, parameters, optimizer, writer):
     dataset = datasets
@@ -28,8 +31,12 @@ def do_epochs(model, datasets, parameters, optimizer, writer):
     # train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
     #                             shuffle=True, num_workers=8, collate_fn=collate)
     
-    train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
-                                shuffle=True, num_workers=8, collate_fn=collate)
+    if TRAIN_MODE == 72:
+        train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
+                                shuffle=True, num_workers=8, collate_fn=collate72)
+    if TRAIN_MODE == 78:
+        train_iterator = DataLoader(dataset, batch_size=parameters["batch_size"],
+                                shuffle=True, num_workers=8, collate_fn=collate78)
 
     logpath = os.path.join(parameters["folder"], "training.log")
     with open(logpath, "w") as logfile:
